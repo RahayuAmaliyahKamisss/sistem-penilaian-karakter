@@ -3,7 +3,7 @@ const mysql = require('mysql2');
 const db = mysql.createConnection({
   host: 'srv1864.hstgr.io',
   user: 'u743507397_sistemuser',
-  password: 'PASSWORD_DATABASE_KAMU',
+  password: 'RahayuAyu130105',
   database: 'u743507397_sistemnilai'
 });
 

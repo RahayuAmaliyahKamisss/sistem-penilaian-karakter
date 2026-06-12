@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Sistem</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Outfit;
+    src:url(../assets/font/Outfit-Light.ttf);
+    min-height:100vh;
+}
+
+.container{
+    display:flex;
+    min-height:100vh;
+}
+
+/* =========================
+   BAGIAN KIRI
+========================= */
+.left{
+    flex:1;
+    background:url("image/mtsn ambon.webp") center center/cover no-repeat;
+    position:relative;
+}
+
+.overlay{
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,0.45);
+}
+
+.text{
+    position:absolute;
+    bottom:60px;
+    left:50px;
+    color:white;
+    z-index:2;
+}
+
+.text h1{
+    font-size:40px;
+    margin-bottom:10px;
+}
+
+.text p{
+    font-size:18px;
+}
+
+/* =========================
+   BAGIAN KANAN
+========================= */
+.right{
+    flex:1;
+    background:#f5f5f5;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:30px;
+}
+
+.login-box{
+    width:100%;
+    max-width:420px;
+
+    background:white;
+    padding:40px;
+    border-radius:24px;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.08);
+}
+
+.login-box h2{
+    text-align:center;
+    margin-bottom:30px;
+    font-size:42px;
+}
+
+/* INPUT */
+.login-box input{
+    width:100%;
+    padding:15px 20px;
+    margin-bottom:15px;
+    border:1px solid #ccc;
+    border-radius:30px;
+    font-family:Outfit;
+    src:url(../assets/font/Outfit-Light.ttf);
+    font-size:16px;
+    outline:none;
+}
+
+.login-box input:focus{
+    border-color:#2d6cdf;
+}
+
+/* BUTTON */
+.login-box button{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:30px;
+    background:#2d6cdf;
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+    font-family:Outfit;
+    src:url(../assets/font/Outfit-Light.ttf);
+}
+
+.login-box button:hover{
+    background:#1b4fb3;
+}
+.password-container{
+    position:relative;
+    width:100%;
+    display:flex;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.password-container input{
+    width:100%;
+    margin-bottom:0;
+    padding-right:50px;
+}
+
+.toggle-password{
+    position:absolute;
+    right:18px;
+
+    cursor:pointer;
+    font-size:18px;
+    color:#888;
+
+    transition:.2s;
+}
+
+.toggle-password:hover{
+    color:#2d6cdf;
+}
+.toggle-password:hover{
+    color:#2d6cdf;
+}
+/* =========================
+   RESPONSIVE MOBILE
+========================= */
+@media (max-width:390px){
+
+    .container{
+        flex-direction:column;
+    }
+
+    .left{
+        height:250px;
+    }
+
+    .text{
+        left:16px;
+        bottom:16px;
+    }
+
+    .text h1{
+        font-size:28px;
+    }
+
+    .text p{
+        font-size:16px;
+    }
+
+    .right{
+        padding:20px;
+    }
+
+    .login-box h2{
+        font-size:28px;
+    }
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- LEFT -->
+    <div class="left">
+        <div class="overlay"></div>
+
+        <div class="text">
+            <h1>Sistem Evaluasi Non-Akademik</h1>
+            <p>Penilaian Karakter Siswa</p>
+            <p>MTsN Ambon</p>
+        </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right">
+        <div class="login-box">
+
+            <h2>Login</h2>
+
+        <input
+            type="text"
+            id="username"
+            placeholder="Username"
+        >
+
+<div class="password-container">
+    <input
+        type="password"
+        id="password"
+        placeholder="Password"
+    >
+
+    <i
+        class="bi bi-eye toggle-password"
+        onclick="togglePassword()"
+        id="eyeIcon">
+    </i>
+</div>
+
+<button onclick="login()">
+    Masuk
+</button>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+function login() {
+    const username =
+        document.getElementById("username").value;
+
+    const password =
+        document.getElementById("password").value;
+
+    fetch("/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            username,
+            password
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (data.success) {
+
+            if (data.user.role === "admin") {
+                window.location.href = "admin.html";
+            } else {
+                window.location.href = "guru.html";
+            }
+
+        } else {
+            alert("Login gagal");
+        }
+
+    });
+}
+function togglePassword() {
+
+    const password =
+        document.getElementById("password");
+
+    const eyeIcon =
+        document.getElementById("eyeIcon");
+
+    if(password.type === "password") {
+
+        password.type = "text";
+
+        eyeIcon.classList.remove("bi-eye");
+        eyeIcon.classList.add("bi-eye-slash");
+
+    } else {
+
+        password.type = "password";
+
+        eyeIcon.classList.remove("bi-eye-slash");
+        eyeIcon.classList.add("bi-eye");
+    }
+}
+</script>
+
+</body>
+</html>

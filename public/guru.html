@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Guru</title>
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<style>
+@font-face {
+    font-family: 'Outfit';
+    src: url('../assets/font/Outfit-Light.ttf') format('truetype');
+}
+
+body{
+    margin: 0;
+    background: #f4f6f9;
+    font-family: 'Outfit';
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1,h2,h3{
+    font-weight:700;
+}
+.sidebar{
+width:280px;
+    height:100vh;
+    background:
+        linear-gradient(
+            180deg,
+            #2e7d32,
+            #1f5f23
+        );
+    padding:25px;
+    box-sizing:border-box;
+    position:fixed;
+    top:0;
+    left:0;
+    overflow-y:auto;
+}
+.sidebar-header{
+    text-align:center;
+    margin-bottom:35px;
+    padding-bottom:25px;
+    border-bottom:1px solid rgba(255,255,255,.15);
+}
+.logo-box{
+    width:140px;
+    height:140px;
+    margin:0 auto 0px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: transparent; /* hilangin kotak putih */
+}
+.logo-box img{
+    width:130px;
+    height:auto;
+    object-fit:contain;
+    filter:
+        drop-shadow(0 4px 8px rgba(0,0,0,.25));
+}
+.sidebar-header h2{
+    margin:0;
+    font-size:22px;
+    color:white;
+}
+.sidebar-header span{
+    font-size:20px;
+    color:rgba(255,255,255,.7);
+}
+.sidebar button{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px 16px;
+    margin-bottom:8px;
+    border:none;
+    border-radius:14px;
+    background:transparent;
+    color:rgba(255,255,255,.85);
+    font-size:15px;
+    font-weight:500;
+    cursor:pointer;
+    transition:.25s;
+}
+.sidebar button i{
+    font-size:18px;
+    width:22px;
+}
+.sidebar button:hover{
+    background:rgba(255,255,255,.12);
+    color:white;
+    transform:translateX(5px);
+}
+.sidebar button.active{
+    background:white;
+    color:#1f6b24;
+    font-weight:600;
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.15);
+}
+.layout{
+    display:flex;
+    min-height:100vh;
+}
+.content{
+    flex:1;
+    padding:25px;
+    margin-left: 28px;
+}
+.content{
+    flex:1;
+    margin-left:280px;
+    padding:25px;
+    width:calc(100% - 280px);
+    box-sizing:border-box;
+}
+.section{
+    display:none;
+
+    background:white;
+
+    padding:28px;
+
+    border-radius:18px;
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,.06);
+}
+
+.section.active{
+    display:block;
+}
+
+.section h2{
+    margin-top:0;
+    margin-bottom:25px;
+
+    font-size:34px;
+}
+
+/* BUTTON */
+
+button.action{
+    min-width:140px;
+
+    height:44px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #2e7d32,
+        #1f5f23
+    );
+    color:white  !important;
+    font-family:'Outfit', sans-serif;
+    font-weight:400;
+    color:white;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    box-shadow:
+    0 6px 15px rgba(46,125,50,.25);
+}
+
+button.action:hover{
+    transform:translateY(-2px);
+
+    box-shadow:
+    0 10px 20px rgba(46,125,50,.35);
+}
+input,
+select{
+    width:100%;
+
+    height:44px;
+
+    padding:0 14px;
+
+    margin:6px 0 12px;
+
+    border:1px solid #ddd;
+
+    border-radius:10px;
+
+    box-sizing:border-box;
+}
+
+input:focus,
+select:focus{
+    outline:none;
+
+    border-color:#2e7d32;
+
+    box-shadow:
+    0 0 0 3px rgba(46,125,50,.15);
+}
+
+/* TABLE */
+
+table{
+    width:100%;
+
+    border-collapse:collapse;
+
+    margin-top:15px;
+
+    overflow:hidden;
+
+    border-radius:12px;
+}
+
+th{
+    background:#f3f6f9;
+
+    padding:12px;
+
+    text-align:left;
+
+    font-size:13px;
+
+    font-weight:600;
+}
+
+td{
+    padding:14px;
+
+    border-bottom:1px solid #eee;
+
+    font-size:14px;
+}
+
+tr:hover{
+    background:#fafafa;
+}
+.popup-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.5);
+    z-index:9999;
+    justify-content:center;
+    align-items:center;
+}
+.popup-content{
+   position:relative;
+    background:white;
+    width:700px;
+    max-width:95%;
+    padding:25px;
+    border-radius:16px;
+    box-shadow:
+    0 20px 50px rgba(0,0,0,.2);
+}
+.popup-kecil{
+    max-width:400px;
+}
+.btn-close{
+    position:absolute;
+    top:10px;
+    right:15px;
+    border:none;
+    background:none;
+    font-size:24px;
+    cursor:pointer;
+}
+.stats{
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+}
+.card{
+    flex:1;
+    min-width:200px;
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:16px;
+
+    box-shadow:
+    0 4px 15px rgba(0,0,0,.06);
+}
+.card p{
+    margin:10px 0 0;
+    color:#555;
+    line-height:1.6;
+}
+
+.card small{
+    color:#777;
+    display:block;
+    margin-top:8px;
+}
+.toast{
+    position:fixed;
+    top:20px;
+    right:20px;
+    min-width:280px;
+    max-width:380px;
+    padding:14px 18px;
+    border-radius:12px;
+    color:#fff;
+    font-size:14px;
+    font-weight:400;
+    backdrop-filter:blur(10px);
+    box-shadow:
+    0 6px 20px rgba(0,0,0,.12);
+    opacity:0;
+    visibility:hidden;
+    transition:
+    opacity .4s ease,
+    visibility .4s ease;
+    z-index:99999;
+}
+.toast.show{
+    opacity:1;
+    visibility:visible;
+}
+.toast.Success{
+    background:rgba(46,125,50,.88);
+    border-left:4px solid #81c784;
+}
+
+.toast.error{
+    background:rgba(211,47,47,.88);
+    border-left:4px solid #ef9a9a;
+}
+.export-icon-inline {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: linear-gradient(135deg, #2e7d32, #1f5f23);
+    color: white;
+
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    box-shadow: 0 6px 15px rgba(0,0,0,.15);
+
+    transition: .25s;
+}
+
+.export-icon-inline i {
+    font-size: 18px;
+}
+
+.export-icon-inline:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,.2);
+}
+</style>
+</head>
+<body>
+<div id="toast" class="toast"></div>
+<div id="popupNilai" class="popup-overlay">
+    
+    <div class="popup-content popup-kecil">
+
+        <button class="btn-close" onclick="tutupPopupNilai()">
+            ×
+        </button>
+        <h2>Input Nilai Akademik</h2>
+        <input
+            type="number"
+            id="inputNilaiAkademik"
+            min="0"
+            max="100"
+            placeholder="Masukkan nilai akhir"
+        >
+        <button class="action" onclick="simpanNilaiAkademik()">
+            Simpan
+        </button>
+    </div>
+</div>
+<div id="popupHasil" class="popup-overlay">
+
+    <div class="popup-content">
+        <h2>Hasil Penilaian</h2>
+
+        <div id="isiPopupHasil"></div>
+
+        <div style="margin-top:20px;text-align:right;">
+            <button class="action" onclick="tutupPopup()">
+                Tutup
+            </button>
+        </div>
+    </div>
+</div>
+<div class="layout">
+    <div class="sidebar">
+
+    <div class="sidebar-header">
+        <div class="logo-box">
+            <img src="./image/Logo.png" alt="Logo">
+        </div>
+        <span>Panel Guru</span>
+    </div>
+
+    <button class="active"
+        onclick="showSection('dashboard')">
+        <i class="bi bi-house-door-fill"></i>
+        Dashboard
+    </button>
+
+    <button onclick="showSection('penilaian')">
+        <i class="bi bi-journal-check"></i>
+        Penilaian Siswa
+    </button>
+
+    <button onclick="showSection('proses')">
+        <i class="bi bi-gear-fill"></i>
+        Proses Metode
+    </button>
+
+    <button onclick="showSection('dataSiswa')">
+        <i class="bi bi-bar-chart-fill"></i>
+        Data Hasil Siswa
+    </button>
+
+    <button onclick="logout()">
+        <i class="bi bi-box-arrow-right"></i>
+        Logout
+    </button>
+
+</div>
+<div class="content">
+    <div id="dashboard" class="section active">
+
+    <h2>Dashboard Guru</h2>
+
+    <p style="
+        color:#666;
+        margin-top:-10px;
+        margin-bottom:30px;
+        font-size:15px;
+    ">
+        Selamat datang di panel guru. Silakan pilih menu
+        sesuai kebutuhan untuk melakukan penilaian siswa,
+        proses metode, dan melihat hasil penilaian.
+    </p>
+
+    <div class="stats">
+
+        <div class="card">
+            <i class="bi bi-journal-check"></i>
+
+            <h3>Penilaian Siswa</h3>
+
+            <p>
+                Digunakan untuk menginput nilai akademik siswa
+                serta mengisi kuesioner penilaian sikap.
+            </p>
+        </div>
+
+        <div class="card">
+            <i class="bi bi-gear-fill"></i>
+
+            <h3>Proses Metode</h3>
+
+            <p>
+                Digunakan untuk melakukan proses perhitungan
+                menggunakan metode Z-Score dan
+                Fuzzy Mamdani.
+            </p>
+        </div>
+
+        <div class="card">
+            <i class="bi bi-bar-chart-fill"></i>
+
+            <h3>Data Hasil Siswa</h3>
+
+            <p>
+                Menampilkan hasil akhir penilaian siswa
+                berdasarkan kategori yang diperoleh.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- LANGKAH PENGGUNAAN -->
+    <div class="card" style="margin-top:30px;">
+        <h3>
+            <i class="bi bi-info-circle-fill"></i>
+            Langkah Penggunaan Sistem
+        </h3>
+
+        <ol style="
+            line-height:1.9;
+            color:#555;
+            padding-left:20px;
+            margin-top:15px;
+        ">
+            <li>
+                Klik menu <strong>Penilaian Siswa</strong>,
+                kemudian pilih kelas yang diampu.
+            </li>
+
+            <li>
+                Guru wajib mengisi seluruh kuesioner siswa
+                pada kelas tersebut sebelum melanjutkan ke
+                tahap berikutnya. Guru juga dapat menambahkan
+                nilai akademik pada kolom yang tersedia.
+            </li>
+
+            <li>
+                Setelah seluruh kuesioner siswa dalam kelas
+                terisi, buka menu
+                <strong>Proses Metode</strong>,
+                pilih kelas, lalu klik tombol proses metode.
+                Tunggu hingga sistem selesai memproses data.
+            </li>
+
+            <li>
+                Untuk melihat hasil akhir penilaian,
+                buka menu
+                <strong>Data Hasil Siswa</strong>,
+                pilih kelas lalu klik
+                <strong>Tampilkan</strong>. Guru juga dapat mendownload data perkelas dalam bentuk excel.
+                Jika belum melalui proses metode,
+                maka data penilaian karakter
+                belum akan ditampilkan.
+            </li>
+        </ol>
+    </div>
+
+</div>
+    <div id="penilaian" class="section">
+        <h2>Kelas yang Diampu</h2>
+
+        <table id="tableKelasGuru">
+            <tr>
+                <th>Mata Pelajaran</th>
+                <th>Kelas</th>
+                <th>Aksi</th>
+            </tr>
+        </table>
+
+        <div id="siswaSection" style="margin-top: 30px; display:none;">
+            <h3>Daftar Siswa</h3>
+
+            <table id="tableSiswaGuru">
+                <tr>
+                    <th>Nama Siswa</th>
+                    <th>Nilai Akademik</th>
+                    <th>Kuesioner</th>
+                    <th>Hasil</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Proses Metode -->
+    <div id="proses" class="section">
+        <h2>Proses Metode</h2>
+        <p>Pilih kelas yang akan diproses.</p>
+
+        <label>Pilih Kelas:</label>
+        <select id="selectKelasProses">
+            <option value="">-- Pilih Kelas --</option>
+        </select>
+
+        <br><br>
+
+        <button class="action" onclick="prosesMetode()">
+            Proses Z-Score & Fuzzy
+        </button>
+
+        <div id="hasilProses" style="margin-top:20px;"></div>
+    </div>
+
+    <!-- Data Siswa -->
+    <div id="dataSiswa" class="section">
+        <h2>Data Hasil Penilaian Siswa</h2>
+        
+        <label>Pilih Kelas:</label>
+        <select id="selectKelasDataSiswa">
+            <option value="">-- Pilih Kelas --</option>
+        </select>
+        <div style="display:flex; gap:10px; align-items:center; margin-top:10px;">
+            
+            <button class="action" onclick="loadDataSiswa()">
+                Tampilkan
+            </button>
+
+            <div class="export-icon-inline" onclick="exportExcel()" title="Download Excel">
+                <i class="bi bi-download"></i>
+            </div>
+
+        </div>
+
+        <div id="hasilDataSiswa" style="margin-top:20px;"></div>
+    </div>
+
+</div>
+
+<script>
+    window.addEventListener('load', () => {
+
+    const pesan = sessionStorage.getItem('toastSuccess');
+
+    if (pesan) {
+        showToast(pesan, 'Success');
+        sessionStorage.removeItem('toastSuccess');
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const menu = params.get('menu');
+
+    if (menu === 'penilaian') {
+        showSection('penilaian');
+    }
+});
+function showSection(id) {
+    document.querySelectorAll('.section').forEach(s=>{
+        s.style.display='none';
+    });
+    document.querySelectorAll('.sidebar button').forEach(btn=>{
+        btn.classList.remove('active');
+    });
+    const section=document.getElementById(id);
+    if(section){
+        section.style.display='block';
+    }
+    const activeBtn = document.querySelector(
+        `.sidebar button[onclick="showSection('${id}')"]`
+    );
+    if(activeBtn){
+        activeBtn.classList.add('active');
+    }
+    if (id === 'penilaian') {
+        loadKelasGuru();
+    }
+
+    if (id === 'proses') {
+        loadKelasUntukProses();
+    }
+
+    if (id === 'dataSiswa') {
+        loadKelasDataSiswa();
+    }
+}
+function loadKelasUntukProses() {
+    fetch('/guru/kelas')
+    .then(res => res.json())
+    .then(data => {
+        let html = '<option value="">-- Pilih Kelas --</option>';
+
+        data.forEach(item => {
+            html += `
+                <option value="${item.id_kelas}">
+                    ${item.nama_mapel} - ${item.nama_kelas}
+                </option>
+            `;
+        });
+
+        document.getElementById('selectKelasProses').innerHTML = html;
+    });
+}
+function loadKelasGuru() {
+    fetch('/guru/kelas')
+    .then(res => {
+        if (!res.ok) throw new Error('Gagal memuat data');
+        return res.json();
+    })
+    .then(data => {
+        let html = `
+            <tr>
+                <th>Mata Pelajaran</th>
+                <th>Kelas</th>
+                <th>Aksi</th>
+            </tr>
+        `;
+
+        data.forEach(item => {
+            html += `
+                <tr>
+                    <td>${item.nama_mapel}</td>
+                    <td>${item.nama_kelas}</td>
+                    <td>
+                        <button class="action"
+                            onclick="loadSiswa(${item.id_kelas})">
+                            Buka
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        document.getElementById('tableKelasGuru').innerHTML = html;
+    })
+    .catch(err => {
+        console.error(err);
+        showToast('Gagal Memuat Kelas Guru', 'error');
+    });
+}
+function lihatHasil(id_siswa) {
+    fetch(`/guru/hasil/${id_siswa}`)
+    .then(res => res.json())
+    .then(data => {
+        let html = '';
+
+        html += `<p><strong>Nilai Akademik:</strong> ${
+            data.nilai_akademik ?? 'Belum diisi'
+        }</p>`;
+
+        html += `
+            <table>
+                <tr>
+                    <th>Indikator</th>
+                    <th>Rata-rata</th>
+                </tr>
+        `;
+
+        data.indikator.forEach(item => {
+            html += `
+                <tr>
+                    <td>${item.nama_indikator}</td>
+                    <td>${parseFloat(item.rata_rata).toFixed(2)}</td>
+                </tr>
+            `;
+        });
+
+        html += `</table>`;
+
+        document.getElementById('isiPopupHasil').innerHTML = html;
+        document.getElementById('popupHasil').style.display = 'flex';
+    });
+}
+
+function tutupPopup() {
+    document.getElementById('popupHasil').style.display = 'none';
+}
+function loadSiswa(id_kelas) {
+    selectedKelasId = id_kelas;
+    fetch(`/guru/siswa/${id_kelas}`)
+    .then(res => res.json())
+    .then(data => {
+        console.log('DATA SISWA:', data);
+        let html = `
+            <tr>
+                <th>Nama Siswa</th>
+                <th>Nilai Akademik</th>
+                <th>Kuesioner</th>
+                <th>Hasil</th>
+            </tr>
+        `;
+
+        data.forEach(siswa => {
+    html += `
+        <tr>
+            <td>${siswa.nama}</td>
+            <td>
+                ${
+                    siswa.nilai_akademik !== null &&
+                    siswa.nilai_akademik !== undefined
+                    ? `
+                        <button class="action" disabled
+                            style="background:#9e9e9e;cursor:not-allowed;">
+                            Sudah Diisi
+                        </button>
+                    `
+                    : `
+                        <button class="action"
+                            onclick="bukaPopupNilai(${siswa.id})">
+                            Isi
+                        </button>
+                    `
+                }
+            </td>
+            <td>
+                ${
+                    siswa.kuesioner_selesai
+                    ? `<button class="action" disabled
+                        style="background:#9e9e9e; cursor:not-allowed;">
+                        Selesai
+                    </button>`
+                    : `<button class="action"
+                        onclick="window.location.href='kuesioner.html?id_siswa=${siswa.id}'">
+                        Isi
+                    </button>`
+                }
+            </td>
+
+            <td>
+                <button class="action"
+                    onclick="lihatHasil(${siswa.id})">
+                    Lihat
+                </button>
+            </td>
+        </tr>
+    `;
+});
+
+        document.getElementById('tableSiswaGuru').innerHTML = html;
+        document.getElementById('siswaSection').style.display = 'block';
+    })
+    .catch(err => {
+        console.error(err);
+        showToast('Gagal Memuat Data Siswa', 'error');
+    });
+}
+function loadKelasDataSiswa() {
+    fetch('/guru/kelas')
+    .then(res => {
+        if (!res.ok) throw new Error('Gagal memuat kelas');
+        return res.json();
+    })
+    .then(data => {
+        let html = '<option value="">-- Pilih Kelas --</option>';
+
+        data.forEach(item => {
+            html += `
+                <option value="${item.id_kelas}">
+                    ${item.nama_mapel} - ${item.nama_kelas}
+                </option>
+            `;
+        });
+
+        document.getElementById('selectKelasDataSiswa').innerHTML = html;
+    })
+    .catch(err => {
+        console.error(err);
+        showToast('Gagal Memuat Daftar Kelas Untuk Data Siswa', 'error');
+    });
+}
+function loadDataSiswa() {
+    const id_kelas = document.getElementById('selectKelasDataSiswa').value;
+
+    if (!id_kelas) {
+        showToast('Silahkan Pilih Kelas Dulu', 'error');
+        return;
+    }
+
+    fetch(`/guru/hasil-akhir/${id_kelas}`)
+        .then(res => {
+            if (!res.ok) {
+                throw new Error('Gagal mengambil data');
+            }
+            return res.json();
+        })
+        .then(data => {
+            let html = `
+                <table>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Siswa</th>
+                        <th>Nilai Akademik</th>
+                        <th>Skor Nilai Sikap</th>
+                        <th>Nilai Akhir</th>
+                        <th>Kategori</th>
+                    </tr>
+            `;
+
+            if (data.length === 0) {
+                html += `
+                    <tr>
+                        <td colspan="6" style="text-align:center;">
+                            Belum ada data hasil penilaian.
+                        </td>
+                    </tr>
+                `;
+            } else {
+                data.forEach((item, index) => {
+                    html += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${item.nama}</td>
+                            <td>${item.nilai_akademik ?? '-'}</td>
+                            <td>${item.total ?? '-'}</td>
+                            <td>${item.nilai_fuzzy ?? '-'}</td>
+                            <td>${item.kategori ?? '-'}</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            html += `</table>`;
+
+            document.getElementById('hasilDataSiswa').innerHTML = html;
+        })
+        .catch(err => {
+            console.error(err);
+            document.getElementById('hasilDataSiswa').innerHTML =
+                '<p>Gagal memuat data siswa.</p>';
+        });
+}
+function bukaPopupNilai(id_siswa) {
+    selectedSiswaId = id_siswa;
+    document.getElementById('inputNilaiAkademik').value = '';
+    document.getElementById('popupNilai').style.display = 'flex';
+}
+function tutupPopupNilai() {
+    document.getElementById('popupNilai').style.display = 'none';
+}
+function simpanNilaiAkademik() {
+    const nilai = document.getElementById('inputNilaiAkademik').value;
+
+    if (nilai === '') {
+        showToast('Nilai Akademik Harus Diisi', 'error');
+        return;
+    }
+
+    fetch('/guru/nilai-akademik/simpan', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id_siswa: selectedSiswaId,
+            nilai: parseFloat(nilai)
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        showToast('Nilai Berhasil Disimpan', 'Success');
+
+        tutupPopupNilai();
+
+        // Refresh tabel siswa
+        if (selectedKelasId) {
+            loadSiswa(selectedKelasId);
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        showToast('Gagal Menyimpan Nilai Akademik', 'error');
+    });
+}
+function simpanKuesioner() {
+    // Ambil semua dropdown jawaban
+    const selects = document.querySelectorAll('select[data-id]');
+    let jawaban = [];
+
+    // Validasi semua pertanyaan harus diisi
+    for (const select of selects) {
+        if (select.value === '') {
+            showToast('Semua Pertanyaan Harus Diisi', 'error');
+            return;
+        }
+
+        jawaban.push({
+            id_pertanyaan: parseInt(select.dataset.id),
+            skor: parseInt(select.value)
+        });
+    }
+    if (!id_siswa) {
+        showToast('ID Siswa Tidak Ditemukan', 'error');
+        return;
+    }
+
+    // Kirim data ke backend
+    fetch('/guru/kuesioner/simpan', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id_siswa: parseInt(id_siswa),
+            jawaban: jawaban
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Gagal menyimpan kuesioner.');
+        }
+        return response.json();
+    })
+    .then(data => {
+    sessionStorage.setItem(
+        'toastSuccess',
+        'Kuesioner berhasil disimpan'
+    );
+    window.location.href = 'guru.html?menu=penilaian';
+})
+    .catch(error => {
+        console.error('Error:', error);
+        showToast(
+            data.message || 'Terjadi Kesalahan Saat Menyimpan Kuesioner.', 'error'
+        );
+    });
+}
+function prosesMetode() {
+    const id_kelas = document.getElementById('selectKelasProses').value;
+
+    if (!id_kelas) {
+        showToast('Silahkan Pilih Kelas Lebih Dulu', 'error');
+        return;
+    }
+
+    if (!confirm('Proses nilai untuk kelas ini?')) {
+        return;
+    }
+
+    fetch('/guru/proses-metode', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id_kelas })
+    })
+    .then(res => res.json())
+    .then(data => {
+        showToast('Proses Berhasul', 'success');
+
+        // Tampilkan hasil proses ke tabel
+        loadHasilProses(id_kelas);
+    })
+    .catch(err => {
+        console.error(err);
+        showToast('Gagal Memproses Metode', 'error');
+    });
+}
+function loadHasilProses(id_kelas) {
+    fetch(`/guru/hasil-akhir/${id_kelas}`)
+    .then(res => res.json())
+    .then(data => {
+        let html = `
+            <h3>Hasil Perhitungan Metode</h3>
+            <table>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Siswa</th>
+                    <th>Kategori</th>
+                </tr>
+        `;
+
+        if (data.length === 0) {
+            html += `
+                <tr>
+                    <td colspan="4" style="text-align:center;">
+                        Belum ada data hasil.
+                    </td>
+                </tr>
+            `;
+        } else {
+            data.forEach((item, index) => {
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${item.nama}</td>
+                        <td>${item.kategori}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        html += `</table>`;
+
+        document.getElementById('hasilProses').innerHTML = html;
+    })
+    .catch(err => {
+        console.error(err);
+        document.getElementById('hasilProses').innerHTML =
+            '<p>Gagal memuat hasil proses.</p>';
+    });
+}
+function logout() {
+    fetch('/logout')
+    .then(() => {
+        window.location.href = 'login.html';
+    });
+}
+function showToast(message, type='success') {
+    const toast = document.getElementById('toast');
+    toast.innerText = message;
+    toast.className = `toast ${type} show`;
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+function exportExcel() {
+    const table = document.querySelector("#hasilDataSiswa table");
+
+    if (!table) {
+        showToast("Tidak ada data untuk diexport", "error");
+        return;
+    }
+
+    const html = table.outerHTML.replace(/ /g, '%20');
+
+    const a = document.createElement('a');
+    a.href = 'data:application/vnd.ms-excel,' + html;
+    a.download = 'data-hasil-siswa.xls';
+    a.click();
+}
+let selectedSiswaId = null;
+let selectedKelasId = null;
+</script>
+</body>
+</html>

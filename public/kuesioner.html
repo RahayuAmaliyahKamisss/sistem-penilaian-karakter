@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kuesioner Penilaian Karakter</title>
+
+<style>
+@font-face {
+    font-family: 'Outfit';
+    src: url('../assets/font/Outfit-Light.ttf') format('truetype');
+}
+body {
+    font-family:'Outfit',sans-serif;
+    background:
+    linear-gradient(
+        135deg,
+        #edf7ee,
+        #dbeedc
+    );
+    margin:0;
+    padding:40px;
+    opacity:0;
+    transition:opacity .35s ease;
+}
+body.loaded{
+    opacity:1;
+}
+.container{
+    max-width:1000px;
+    margin:auto;
+    background:white;
+    padding:35px;
+    border-radius:24px;
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.08);
+    backdrop-filter:blur(10px);
+}
+.header{
+    margin-bottom:35px;
+    text-align:center;
+}
+
+.header h1{
+    margin:0;
+    color:#1f6b24;
+    font-size:34px;
+}
+
+.header p{
+    color:#666;
+    margin-top:10px;
+}
+h1 {
+    margin-top: 0;
+}
+.card{
+    background:#fff;
+    border:none;
+    border-radius:18px;
+    padding:24px;
+    margin-bottom:24px;
+    box-shadow:
+        0 5px 20px rgba(0,0,0,.06);
+    transition:.3s;
+}
+.card:hover{
+    transform:translateY(-3px);
+}
+.card h3{
+    margin-top:0;
+    color:#1f6b24;
+    border-left:5px solid #2e7d32;
+    padding-left:12px;
+}
+.question {
+    margin-bottom: 15px;
+}
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+select {
+    width:100%;
+    padding:12px;
+    border-radius:12px;
+    border:1px solid #ddd;
+    font-family:'Outfit';
+    transition:.2s;
+}
+select:focus{
+    outline:none;
+    border-color:#2e7d32;
+    box-shadow:
+        0 0 0 4px rgba(46,125,50,.15);
+}
+.btn-simpan{
+    width:100%;
+    height:55px;
+    border:none;
+    border-radius:14px;
+    background:
+        linear-gradient(
+            135deg,
+            #2e7d32,
+            #1f5f23
+        );
+    color:white;
+    font-size:16px;
+    font-family:'Outfit';
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+    box-shadow:
+        0 10px 25px rgba(46,125,50,.25);
+}
+.btn-simpan:hover{
+    transform:translateY(-2px);
+}
+button:hover {
+    background: #256428;
+}
+.loading{
+    text-align:center;
+    padding:40px;
+    color:#666;
+}
+</style>
+</head>
+<body>
+<div class="header">
+    <h1>Kuesioner Penilaian Karakter</h1>
+    <p>Silakan isi seluruh pertanyaan dengan jujur dan objektif</p>
+</div>
+<div id="loadingPage" class="loading">
+    Memuat pertanyaan...
+</div>
+<div class="container" id="containerKuesioner" style="display:none;">
+    <div id="kuesionerContainer"></div>
+
+    <button
+        id="btnSimpan"
+        class="btn-simpan"
+        onclick="simpanKuesioner()">
+        Simpan Kuesioner
+    </button>
+</div>
+
+<script>
+    window.addEventListener('load', () => {
+    document.body.classList.add('loaded');
+});
+const params = new URLSearchParams(window.location.search);
+const id_siswa = params.get('id_siswa');
+console.log(id_siswa);
+
+if (!id_siswa) {
+    alert('ID siswa tidak ditemukan.');
+    window.location.href = 'guru.html?menu=penilaian';
+}
+function loadKuesioner() {
+    fetch('/guru/kuesioner')
+    .then(res => res.json())
+    .then(data => {
+        let html = '';
+
+        if (data.length === 0) {
+            html = '<p>Tidak ada pertanyaan kuesioner.</p>';
+            document.getElementById('kuesionerContainer').innerHTML = html;
+            document.getElementById('loadingPage').style.display = 'none';
+            document.getElementById('containerKuesioner').style.display = 'block';
+            return;
+        }
+
+        data.forEach(indikator => {
+            html += `
+                <div class="card">
+                    <h3>${indikator.nama_indikator}</h3>
+            `;
+
+            indikator.pertanyaan.forEach(p => {
+                html += `
+                    <div class="question">
+                        <label>${p.pertanyaan}</label>
+                        <select data-id="${p.id}">
+                            <option value="">Pilih Nilai</option>
+                            <option value="1">1 - Sangat Kurang</option>
+                            <option value="2">2 - Kurang</option>
+                            <option value="3">3 - Cukup</option>
+                            <option value="4">4 - Baik</option>
+                            <option value="5">5 - Sangat Baik</option>
+                        </select>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+        });
+        document.getElementById('kuesionerContainer').innerHTML = html;
+        document.getElementById('loadingPage').style.display = 'none';
+        document.getElementById('containerKuesioner').style.display = 'block';
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Gagal memuat kuesioner.');
+    });
+}
+function simpanKuesioner() {
+    const selects = document.querySelectorAll('select[data-id]');
+    const jawaban = [];
+
+    for (const s of selects) {
+        if (!s.value) {
+            alert('Semua pertanyaan harus diisi.');
+            return;
+        }
+
+        jawaban.push({
+            id_pertanyaan: s.dataset.id,
+            skor: s.value
+        });
+    }
+
+    fetch('/guru/kuesioner/simpan', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id_siswa,
+            jawaban
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+
+        // Kembali ke halaman penilaian siswa
+        window.location.href = 'guru.html?menu=penilaian';
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Gagal menyimpan kuesioner.');
+    });
+}
+
+loadKuesioner();
+</script>
+
+</body>
+</html>

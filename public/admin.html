@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<title>Admin Dashboard</title>
+<style>
+@font-face {
+    font-family: 'Outfit';
+    src: url('../assets/font/Outfit-Light.ttf') format('truetype');
+    font-weight: 300;
+}
+@font-face {
+    font-family: 'Outfit';
+    src: url('../assets/font/Outfit-Light.ttf') format('truetype');
+    font-weight: 400;
+}
+@font-face {
+    font-family: 'Outfit';
+    src: url('../assets/font/Outfit-Light.ttf') format('truetype');
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'Outfit';
+    src: url('../assets/font/Outfit-Light.ttf') format('truetype');
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: 'Outfit';
+    src: url('../assets/font/Outfit-Light.ttf') format('truetype');
+    font-weight: 700;
+}
+body {
+    margin: 0;
+    background: #f4f6f9;
+    font-family: 'Outfit';
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3 {
+    font-weight: 700;
+}
+.sidebar{
+    width:280px;
+    height:100vh;
+
+    background:
+        linear-gradient(
+            180deg,
+            #2e7d32,
+            #1f5f23
+        );
+
+    padding:25px;
+    box-sizing:border-box;
+
+    position:fixed;
+    top:0;
+    left:0;
+    overflow-y:auto;
+}
+.sidebar-header{
+    text-align:center;
+    margin-bottom:35px;
+    padding-bottom:25px;
+    border-bottom:1px solid rgba(255,255,255,.15);
+}
+.logo-box{
+    width:140px;
+    height:140px;
+    margin:0 auto 0px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: transparent; /* hilangin kotak putih */
+}
+.logo-box img{
+    width:130px;
+    height:auto;
+    object-fit:contain;
+    filter:
+        drop-shadow(0 4px 8px rgba(0,0,0,.25));
+}
+.sidebar-header h2{
+    margin:0;
+    font-size:22px;
+    color:white;
+}
+.sidebar-header span{
+    font-size:20px;
+    color:rgba(255,255,255,.7);
+}
+.sidebar button{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px 16px;
+    margin-bottom:8px;
+    border:none;
+    border-radius:14px;
+    background:transparent;
+    color:rgba(255,255,255,.85);
+    font-size:15px;
+    font-weight:500;
+    cursor:pointer;
+    transition:.25s;
+}
+.sidebar button i{
+    font-size:18px;
+    width:22px;
+}
+.sidebar button:hover{
+    background:rgba(255,255,255,.12);
+    color:white;
+    transform:translateX(5px);
+}
+.sidebar button.active{
+    background:white;
+    color:#1f6b24;
+    font-weight:600;
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.15);
+}
+.layout{
+    display:flex;
+    min-height:100vh;
+}
+.stats{
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+}
+.card{
+    flex:1;
+    min-width:200px;
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:16px;
+
+    box-shadow:
+    0 4px 15px rgba(0,0,0,.06);
+}
+.content {
+    flex: 1;
+    padding: 25px;
+    margin-left: 28px;
+}
+.content{
+    flex:1;
+    margin-left:280px;
+    padding:25px;
+    width:calc(100% - 280px);
+    box-sizing:border-box;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.section h2{
+    margin-top:0;
+    margin-bottom:25px;
+
+    font-size:36px;
+    font-weight:700;
+}
+table{
+    width:100%;
+    border-collapse:separate;
+    border-spacing:0;
+    margin-top:15px;
+
+    background:white;
+    border-radius:16px;
+    overflow:hidden;
+
+    box-shadow:
+        0 4px 15px rgba(0,0,0,.05);
+}
+th{
+    background:#f7f9fc;
+    padding:16px;
+    text-align:left;
+    font-size:14px;
+    font-weight:600;
+    border-bottom:1px solid #e5e7eb;
+}
+td{
+    padding:16px;
+    border-bottom:1px solid #f0f0f0;
+    font-size:14px;
+    background:white;
+}
+tbody tr:hover{
+    background:#f9fbf9;
+}
+textarea{
+    width:100%;
+    padding:15px;
+    border:1px solid #ddd;
+    border-radius:12px;
+    resize:vertical;
+    font-family:inherit;
+
+    box-sizing:border-box;
+}
+input, select {
+    box-sizing: border-box;
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    margin: 6px 0 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    transition: .2s;
+    outline: none;
+}
+input:focus, select:focus {
+    border-color: #2e7d32;
+    box-shadow: 0 0 0 3px rgba(46,125,50,.15);
+}
+button.action {
+    min-width: 140px;
+    font-family: 'Outfit', sans-serif;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #2e7d32, #1f5f23);
+    color: white;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .25s;
+    box-shadow: 0 6px 15px rgba(46,125,50,.25);
+}
+button.action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(46,125,50,.35);
+}
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    gap: 10px;
+}
+.btn-edit{
+    background:#e3f2fd;
+    color:#1976d2;
+}
+
+.btn-delete{
+    background:#ffebee;
+    color:#d32f2f;
+}
+
+.btn-edit:hover,
+.btn-delete:hover{
+    transform:scale(1.05);
+}
+.delete-btn{
+    width:38px;
+    height:38px;
+
+    border:none;
+    border-radius:10px;
+
+    background:#ffebee;
+    color:#d32f2f;
+
+    cursor:pointer;
+}
+
+.delete-btn:hover{
+    background:#c62828;
+    color:white;
+}
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    justify-content:center;
+    align-items:center;
+    overflow-y:auto;
+    padding:20px;
+    box-sizing:border-box;
+    z-index:999;
+}
+.modal-content{
+    overflow-x: hidden;
+    width:600px;
+    max-width:95%;
+    max-height:85vh;
+    background:white;
+    padding:25px;
+    border-radius:16px;
+    overflow-y:auto;
+    box-shadow:
+    0 20px 50px rgba(0,0,0,.2);
+
+    font-family:'Outfit',sans-serif;
+}
+@keyframes pop {
+    from { transform: scale(.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+.modal-content h3{
+    margin-top:0;
+}
+
+.modal-action{
+    margin-top:15px;
+
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+}
+.modal-action button,
+#modalSiswa > .modal-content > button.action{
+    height:48px;
+    min-width:120px;
+
+    border:none;
+    border-radius:12px;
+
+    font-family:'Outfit', sans-serif;
+    font-size:14px;
+    font-weight:600;
+
+    cursor:pointer;
+}
+.modal-action button:first-child{
+    background:#eceff1;
+    color:#37474f;
+}
+
+.modal-action button:first-child:hover{
+    background:#dfe5e8;
+}
+.siswa-row{
+    margin-bottom:10px;
+}
+
+.siswa-row input{
+    height:46px;
+    border:1px solid #dcdcdc;
+    border-radius:10px;
+    padding:0 14px;
+    font-family:'Outfit', sans-serif;
+}
+#listInputSiswa{
+    max-height:350px;
+    overflow-y:auto;
+    padding-right:5px;
+    margin-bottom:15px;
+}
+.tambah-baris-btn{
+    width:100%;
+    margin-top:10px;
+    margin-bottom:10px;
+}
+.btn-icon {
+    all: unset;
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.btn-icon i {
+    font-size: 18px;
+    color: #333;
+}
+
+.btn-icon:hover i {
+    transform: scale(1.15);
+}
+#modalMapping .modal-content h3{
+    margin-top:0;
+    margin-bottom:20px;
+
+    font-size:24px;
+    font-weight:700;
+}
+
+#modalMapping label{
+    display:block;
+    margin-top:10px;
+    margin-bottom:6px;
+
+    font-size:14px;
+    font-weight:600;
+    color:#444;
+}
+
+#modalMapping select{
+    width:100%;
+    border:1px solid #ddd;
+    border-radius:12px;
+    padding:10px;
+    font-family:'Outfit',sans-serif;
+}
+.feature-card{
+    position:relative;
+    transition:.3s;
+    cursor:pointer;
+}
+
+.feature-card:hover{
+    transform:translateY(-6px);
+    box-shadow:
+        0 12px 25px rgba(0,0,0,.1);
+}
+
+.icon-box{
+    width:65px;
+    height:65px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:16px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2e7d32,
+            #1f5f23
+        );
+
+    margin-bottom:15px;
+}
+
+.icon-box i{
+    font-size:28px;
+    color:white;
+}
+
+.feature-card h3{
+    margin:0 0 10px;
+    color:#1f2937;
+}
+
+.feature-card p{
+    margin:0;
+    color:#666;
+    line-height:1.7;
+    font-size:14px;
+}
+.dashboard-info{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.dashboard-card{
+    display:flex;
+    align-items:center;
+    gap:20px;
+
+    padding:22px;
+
+    border-radius:18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #f7faf7
+        );
+
+    border:1px solid #e8efe8;
+
+    transition:.25s;
+}
+
+.dashboard-card:hover{
+    transform:translateY(-3px);
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.08);
+}
+
+.card-icon{
+    width:70px;
+    height:70px;
+
+    flex-shrink:0;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2e7d32,
+            #1f5f23
+        );
+}
+
+.card-icon i{
+    font-size:30px;
+    color:white;
+}
+
+.card-content h3{
+    margin:0 0 8px;
+    font-size:20px;
+    color:#1f2937;
+}
+
+.card-content p{
+    margin:0;
+    line-height:1.7;
+    color:#616161;
+}
+#kelas_map{
+    height:200px;
+}
+@media (max-width:768px){
+
+    body{
+        flex-direction:column;
+    }
+
+    .sidebar{
+        position: relative;
+        width:100%;
+        height:auto;
+    }
+
+    .content{
+        padding:15px;
+    }
+
+    .topbar{
+        flex-direction:column;
+    }
+}
+
+</style>
+</head>
+
+<div id="modalGuru" class="modal">
+    <div class="modal-content">
+
+        <h3>Tambah Guru</h3>
+
+        <input id="nama_guru" placeholder="Nama Guru">
+        <input id="nip" placeholder="NIP">
+        <input id="username" placeholder="Username">
+        <input id="password" placeholder="Password">
+
+        <div class="modal-action">
+            <button onclick="tutupModalGuru()">
+                Batal
+            </button>
+
+            <button class="action" onclick="tambahGuru()">
+                Simpan
+            </button>
+        </div>
+
+    </div>
+</div>
+<div id="modalKelas" class="modal">
+    <div class="modal-content">
+
+        <h3>Tambah Kelas</h3>
+
+        <div id="listInputKelas"></div>
+
+        <button type="button" class="action tambah-baris-btn" onclick="tambahBarisKelas()">
+            + Tambah Baris
+        </button>
+
+        <div class="modal-action">
+            <button onclick="tutupModalKelas()">
+                Batal
+            </button>
+
+            <button class="action" onclick="tambahKelas()">
+                Simpan
+            </button>
+        </div>
+
+    </div>
+</div>
+<body>
+<div class="layout">
+    <div class="sidebar">
+    <div class="sidebar-header">
+        <div class="logo-box">
+            <img src="./image/Logo.png" alt="Logo">
+        </div>
+        <span>Admin Panel</span>
+    </div>
+    <button onclick="showSection('dashboard')">
+        <i class="bi bi-house-door-fill"></i>
+        Dashboard
+    </button>
+    <button onclick="showSection('guru')">
+        <i class="bi bi-person-badge-fill"></i>
+        Data Guru
+    </button>
+    <button onclick="showSection('kelas')">
+        <i class="bi bi-building-fill"></i>
+        Data Kelas
+    </button>
+    <button onclick="showSection('mapping')">
+        <i class="bi bi-diagram-3-fill"></i>
+        Mapping
+    </button>
+    <button onclick="logout()">
+        <i class="bi bi-box-arrow-right"></i>
+        Logout
+    </button>
+
+</div>
+<div class="content">
+<div id="dashboard" class="section">
+
+    <h2>Dashboard Admin</h2>
+
+    <div class="dashboard-info">
+
+        <div class="dashboard-card">
+            <div class="card-icon">
+                <i class="bi bi-person-badge-fill"></i>
+            </div>
+
+            <div class="card-content">
+                <h3>Data Guru</h3>
+                <p>
+                    Digunakan untuk menambah, menghapus,
+                    dan mengelola akun guru yang akan
+                    menggunakan sistem penilaian.
+                </p>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-icon">
+                <i class="bi bi-building-fill"></i>
+            </div>
+
+            <div class="card-content">
+                <h3>Data Kelas</h3>
+                <p>
+                    Digunakan untuk membuat kelas baru,
+                    mengelola daftar siswa, serta melihat
+                    jumlah siswa pada setiap kelas.
+                </p>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-icon">
+                <i class="bi bi-diagram-3-fill"></i>
+            </div>
+
+            <div class="card-content">
+                <h3>Mapping Guru & Kelas</h3>
+                <p>
+                    Menghubungkan guru dengan mata
+                    pelajaran dan kelas yang diampu.
+                </p>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="card-icon">
+                <i class="bi bi-clipboard-data-fill"></i>
+            </div>
+
+            <div class="card-content">
+                <h3>Sistem Penilaian</h3>
+                <p>
+                    Mendukung proses penilaian siswa
+                    berdasarkan kuesioner dan nilai
+                    akademik yang diinput guru.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- GURU -->
+<div id="guru" class="section">
+    <h2>Data Guru</h2>
+
+    <div class="topbar">
+        <input id="searchGuru" placeholder="Search...">
+        <button class="action" onclick="bukaModalGuru()">+ Tambah Guru</button>
+    </div>
+        <table id="tableGuru">
+        <thead>
+            <tr>
+                <th>Nama</th>
+                <th>NIP</th>
+                <th>Username</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<!-- KELAS -->
+<div id="kelas" class="section">
+    <h2>Data Kelas</h2>
+
+    <div class="topbar">
+        <input placeholder="Search...">
+        <button class="action" onclick="bukaModalKelas()">+ Tambah Kelas</button>
+    </div>
+
+    <table id="tableKelas">
+    <tr>
+        <th>Nama Kelas</th>
+        <th>Jumlah Siswa</th>
+        <th>Aksi</th>
+    </tr>
+</table>
+</div>
+
+<!-- MAPPING -->
+<div id="mapping" class="section">
+    <h2>Mapping Guru & Kelas</h2>
+
+    <div class="topbar">
+        <button class="action" onclick="bukaModalMapping()">
+            + Tambah Mapping
+        </button>
+    </div>
+
+    <table id="tableMapping">
+        <tr>
+            <th>Nama Guru</th>
+            <th>NIP</th>
+            <th>Mata Pelajaran</th>
+            <th>Kelas</th>
+            <th>Aksi</th>
+        </tr>
+    </table>
+
+    </div>
+
+</div>
+
+</div>
+</div>
+<div id="modalSiswa" class="modal">
+
+    <div class="modal-content">
+
+        <h3>Input Siswa</h3>
+
+        <input type="hidden" id="bulk_id_kelas">
+
+        <div id="listInputSiswa"></div>
+
+        <button
+            type="button"
+            class="action tambah-baris-btn"
+            onclick="tambahBarisSiswa()">
+            + Tambah Baris
+        </button>
+
+        <div class="modal-action">
+
+            <button onclick="tutupModal()">
+                Batal
+            </button>
+
+            <button
+                class="action"
+                onclick="simpanBulkSiswa()">
+                Simpan
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+<div id="modalMapping" class="modal">
+
+    <div class="modal-content">
+
+        <h3>Tambah Mapping</h3>
+
+        <label>Guru</label>
+        <select id="guru_map"></select>
+
+        <label>Mata Pelajaran</label>
+        <select id="mapel_map"></select>
+
+        <label>Kelas</label>
+        <select
+            id="kelas_map"
+            multiple
+            style="height:180px;">
+        </select>
+
+        <br><br>
+<div class="modal-action">
+
+    <button
+        type="button"
+        onclick="tutupModalMapping()">
+        Batal
+    </button>
+
+    <button
+        type="button"
+        class="action"
+        onclick="mapping()">
+        Simpan Mapping
+    </button>
+
+</div>
+    </div>
+
+</div>
+
+<div id="modalLihatSiswa" class="modal">
+
+    <div class="modal-content">
+
+        <div id="isiModalLihatSiswa"></div>
+
+        <button
+            class="action"
+            onclick="tutupModalLihat()">
+            Tutup
+        </button>
+
+    </div>
+
+</div>
+<script>
+    window.onclick = function(event){
+
+    if(event.target === document.getElementById('modalGuru')){
+        tutupModalGuru();
+    }
+
+    if(event.target === document.getElementById('modalKelas')){
+        tutupModalKelas();
+    }
+
+    if(event.target === document.getElementById('modalSiswa')){
+        tutupModal();
+    }
+
+    if(event.target === document.getElementById('modalLihatSiswa')){
+        tutupModalLihat();
+    }
+}
+function bukaModalGuru(){
+    const el = document.getElementById('modalGuru');
+    if (!el) return console.error('modalGuru tidak ada');
+    el.style.display = 'flex';
+}
+
+function tutupModalGuru(){
+    document.getElementById('modalGuru').style.display = 'none';
+}
+function bukaModalKelas(){
+    document.getElementById('modalKelas').style.display = 'flex';
+
+    const container = document.getElementById('listInputKelas');
+    container.innerHTML = '';
+
+    tambahBarisKelas(); // default 1 input
+}
+function tutupModalKelas(){
+    document.getElementById('modalKelas').style.display = 'none';
+}
+function bukaModalMapping() {
+    const el = document.getElementById('modalMapping');
+    if (!el) return console.error('modalMapping tidak ada');
+    el.style.display = 'flex';
+
+    loadGuruDropdown();
+    loadMapelDropdown();
+    loadKelas();
+}
+
+function tutupModalMapping() {
+    const el = document.getElementById('modalMapping');
+    if (!el) return;
+    el.style.display = 'none';
+}
+function safeGet(id) {
+    const el = document.getElementById(id);
+    if (!el) {
+        console.error('❌ Element tidak ditemukan:', id);
+    }
+    return el;
+}
+function toggleForm(id) {
+    const el = safeGet(id);
+    if (!el) return;
+
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+function showSection(id){
+    document.querySelectorAll('.section').forEach(s=>{
+        s.style.display='none';
+    });
+    document.querySelectorAll('.sidebar button').forEach(btn=>{
+        btn.classList.remove('active');
+    });
+    const section=document.getElementById(id);
+    if(section){
+        section.style.display='block';
+    }
+    const activeBtn = document.querySelector(
+        `.sidebar button[onclick="showSection('${id}')"]`
+    );
+    if(activeBtn){
+        activeBtn.classList.add('active');
+    }
+    if(id==='guru'){
+        loadGuru();
+        loadGuruDropdown();
+        loadMapel();
+    }
+    if(id==='kelas'){
+        loadKelas();
+    }
+    if(id==='mapping'){
+        loadGuruDropdown();
+        loadMapelDropdown();
+        loadKelas();
+        loadMapping();
+    }
+}
+function loadGuru() {
+    fetch('/admin/guru')
+    .then(res => res.json())
+    .then(data => {
+
+        const tbody = document.querySelector("#tableGuru tbody");
+        if (!tbody) return;
+
+        let html = "";
+
+        data.forEach(g => {
+            html += `
+                <tr>
+                    <td>${g.nama}</td>
+                    <td>${g.nip}</td>
+                    <td>${g.username}</td>
+                    <td>
+                        <button class="btn-delete" onclick="hapusGuru(${g.id})" title="Hapus">
+                            <i class="bi bi-trash3"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        tbody.innerHTML = html;
+    });
+}
+function loadGuruDropdown() {
+    fetch('/admin/guru')
+    .then(res => res.json())
+    .then(data => {
+        let option = ""
+
+        data.forEach(g => {
+            option += `<option value="${g.id}">${g.nama}</option>`
+        })
+
+        document.getElementById('guru_map').innerHTML = option
+    })
+}
+function loadMapel() {
+    fetch('/admin/mapel')
+    .then(res => res.json())
+    .then(data => {
+        let options = '';
+
+        data.forEach(m => {
+            options += `
+                <option value="${m.id}">
+                    ${m.nama_mapel}
+                </option>`;
+        });
+
+        const el = document.getElementById('mapel_guru');
+        if (el) {
+            el.innerHTML = options;
+        }
+    });
+}
+async function tambahGuru() {
+    try {
+        const res = await fetch('/admin/guru', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                nama: document.getElementById('nama_guru').value,
+                nip: document.getElementById('nip').value,
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value
+            })
+        });
+
+        const data = await res.json();
+        alert(data.message);
+
+        if (res.ok) {
+            // kosongkan form
+            document.getElementById('nama_guru').value = '';
+            document.getElementById('nip').value = '';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+
+            // tutup form
+            tutupModalGuru();
+
+            // reload tabel
+            loadGuru();
+        }
+    } catch (error) {
+        console.error(error);
+        alert('Terjadi kesalahan saat menyimpan data guru.');
+    }
+}
+function hapusGuru(id) {
+    if (!confirm("Yakin ingin menghapus guru ini?")) return;
+
+    fetch(`/admin/guru/${id}`, {
+        method: "DELETE"
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        loadGuru();
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Gagal menghapus data.");
+    });
+}
+
+function loadKelas() {
+    fetch('/admin/kelas')
+    .then(res => res.json())
+    .then(data => {
+        let html = `
+        <tr>
+            <th>Nama Kelas</th>
+            <th>Jumlah Siswa</th>
+            <th>Aksi</th>
+        </tr>`;
+
+        let options = '';
+
+        data.forEach(k => {
+            html += `
+            <tr>
+                <td>${k.nama_kelas}</td>
+                <td>${k.jumlah_siswa || 0}</td>
+                <td>
+                    <button
+                    class="btn-edit"
+                    onclick="bukaFormBulk(${k.id})"
+                    title="Input Siswa">
+                    <i class="bi bi-people-fill"></i>
+                </button>
+
+                <button
+                    class="btn-edit"
+                    onclick="lihatSiswa(${k.id})"
+                    title="Lihat Siswa">
+                    <i class="bi bi-eye-fill"></i>
+                </button>
+
+                <button
+                    class="btn-delete"
+                    onclick="hapusKelas(${k.id})"
+                    title="Hapus">
+                    <i class="bi bi-trash3"></i>
+                </button>
+                </td>
+            </tr>`;
+
+            options += `
+                <option value="${k.id}">
+                    ${k.nama_kelas}
+                </option>`;
+        });
+
+        document.getElementById('tableKelas').innerHTML = html;
+        const kelasMap = document.getElementById('kelas_map');
+        if (kelasMap) {
+            kelasMap.innerHTML = options;
+        }
+    });
+}
+function tambahBarisKelas(nama = '') {
+    const row = document.createElement('div');
+    row.className = 'kelas-row';
+
+    row.innerHTML = `
+        <input type="text"
+               class="nama-kelas"
+               value="${nama}"
+               placeholder="Nama Kelas">
+    `;
+
+    document.getElementById('listInputKelas').appendChild(row);
+}
+function tambahKelas() {
+
+    const daftar = Array.from(document.querySelectorAll('.nama-kelas'))
+        .map(i => i.value.trim())
+        .filter(n => n !== '');
+
+    fetch('/admin/kelas-bulk', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            daftar_kelas: daftar
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        tutupModalKelas();
+        loadKelas();
+    })
+}
+function editKelas(id) {
+    alert("Edit kelas ID: " + id);
+}
+function hapusKelas(id) {
+    if (!confirm("Yakin ingin menghapus kelas ini?")) return;
+
+    fetch(`/admin/kelas/${id}`, {
+        method: 'DELETE'
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        loadKelas();
+    });
+}
+function bukaFormBulk(id_kelas) {
+
+    document.getElementById('bulk_id_kelas').value = id_kelas;
+
+    fetch(`/admin/siswa/${id_kelas}`)
+    .then(res => res.json())
+    .then(data => {
+
+        const container =
+            document.getElementById('listInputSiswa');
+
+        container.innerHTML = '';
+
+        if(data.length > 0){
+
+            data.forEach(s => {
+                tambahBarisSiswa(s.nama);
+            });
+
+        }else{
+
+            tambahBarisSiswa();
+        }
+
+        document.getElementById('modalSiswa').style.display = 'flex';
+    });
+}
+
+function simpanBulkSiswa() {
+    fetch('/admin/siswa-bulk', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id_kelas: document.getElementById('bulk_id_kelas').value,
+            daftar_nama: Array.from(
+                    document.querySelectorAll('.nama-siswa')
+                )
+                .map(input => input.value.trim())
+                .filter(nama => nama !== '')
+                .join('\n')
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        document.getElementById('modalSiswa').style.display = 'none';
+        loadKelas();
+    });
+}
+
+function lihatSiswa(id_kelas) {
+
+    fetch(`/admin/siswa/${id_kelas}`)
+    .then(res => res.json())
+    .then(data => {
+
+        let html = `
+            <h3>Daftar Siswa</h3>
+            <ol>
+        `;
+
+        data.forEach(s => {
+            html += `<li>${s.nama}</li>`;
+        });
+
+        html += `</ol>`;
+
+        document.getElementById('isiModalLihatSiswa').innerHTML = html;
+
+        document.getElementById('modalLihatSiswa').style.display = 'flex';
+    });
+}
+function loadSiswa() {
+    fetch('/admin/siswa')
+    .then(res => res.json())
+    .then(data => {
+        let html = `
+        <tr>
+            <th>Nama Siswa</th>
+            <th>Kelas</th>
+            <th>Aksi</th>
+        </tr>`;
+
+        data.forEach(s => {
+            html += `
+            <tr>
+                <td>${s.nama}</td>
+                <td>${s.nama_kelas}</td>
+                <td>
+                    <button class="action"
+                            onclick="hapusSiswa(${s.id})">
+                        Hapus
+                    </button>
+                </td>
+            </tr>`;
+        });
+
+        document.getElementById('tableSiswa').innerHTML = html;
+    });
+}
+function tambahSiswa() {
+    fetch('/admin/siswa', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            nama: document.getElementById('nama_siswa').value,
+            id_kelas: document.getElementById('kelas_siswa').value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+
+        document.getElementById('nama_siswa').value = '';
+        document.getElementById('formSiswa').style.display = 'none';
+
+        loadSiswa();
+    });
+}
+function hapusSiswa(id) {
+    if (!confirm("Yakin ingin menghapus siswa ini?")) return;
+
+    fetch(`/admin/siswa/${id}`, {
+        method: 'DELETE'
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        loadSiswa();
+    });
+}
+
+
+function loadMapelDropdown() {
+    fetch('/admin/mapel')
+    .then(res => res.json())
+    .then(data => {
+        let options = '';
+
+        data.forEach(m => {
+            options += `
+                <option value="${m.id}">
+                    ${m.nama_mapel}
+                </option>`;
+        });
+
+        document.getElementById('mapel_map').innerHTML = options;
+    });
+}
+function tambahBarisSiswa(nama = '') {
+
+    const row = document.createElement('div');
+
+    row.className = 'siswa-row';
+
+    row.innerHTML = `
+        <input
+            type="text"
+            class="nama-siswa"
+            value="${nama}"
+            placeholder="Nama siswa">
+    `;
+
+    document
+        .getElementById('listInputSiswa')
+        .appendChild(row);
+}
+function lihatKelas(daftarKelas) {
+    alert("Kelas yang diajar:\n\n" + daftarKelas.replace(/, /g, "\n"));
+}
+function mapping() {
+    const selectedKelas = Array.from(
+        document.getElementById("kelas_map").selectedOptions
+    ).map(option => option.value);
+
+    fetch('/admin/mapping', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id_guru: document.getElementById('guru_map').value,
+            id_mapel: document.getElementById('mapel_map').value,
+            id_kelas: selectedKelas
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        document.getElementById('modalMapping').style.display = 'none';
+        loadMapping();
+    });
+}
+function loadMapping() {
+    fetch('/admin/mapping')
+    .then(res => res.json())
+    .then(data => {
+        let html = `
+        <tr>
+            <th>Nama Guru</th>
+            <th>NIP</th>
+            <th>Mata Pelajaran</th>
+            <th>Aksi</th>
+        </tr>`;
+
+        data.forEach(m => {
+            html += `
+            <tr>
+                <td>${m.nama}</td>
+                <td>${m.nip}</td>
+                <td>${m.mapel}</td>
+                <td>
+                    <button class="btn-edit" onclick="lihatKelas('${m.daftar_kelas}')" title="Lihat Kelas">
+                        <i class="bi bi-eye-fill"></i>
+                    </button>
+
+                    <button class="btn-edit" onclick="editMapping(${m.id_guru}, ${m.id_mapel})" title="Edit Mapping">
+                        <i class="bi bi-pencil-square"></i>
+                    </button>
+
+                    <button class="btn-delete" onclick="hapusMapping(${m.id_guru}, ${m.id_mapel})" title="Hapus Mapping">
+                        <i class="bi bi-trash3"></i>
+                    </button>
+                </td>
+            </tr>`;
+        });
+
+        document.getElementById('tableMapping').innerHTML = html;
+    });
+}
+function editMapping(id_guru, id_mapel) {
+    // Tampilkan form
+    document.getElementById('modalMapping').style.display = 'flex';
+
+    // Set guru & mapel
+    document.getElementById('guru_map').value = id_guru;
+    document.getElementById('mapel_map').value = id_mapel;
+
+    // Ambil daftar kelas yang sudah dipilih
+    fetch(`/admin/mapping-detail/${id_guru}/${id_mapel}`)
+    .then(res => res.json())
+    .then(data => {
+        const kelasIds = data.map(item => String(item.id_kelas));
+
+        const options = document.getElementById('kelas_map').options;
+        for (let i = 0; i < options.length; i++) {
+            options[i].selected = kelasIds.includes(options[i].value);
+        }
+    });
+}
+function hapusMapping(id_guru, id_mapel) {
+
+    if (!confirm("Yakin ingin menghapus mapping ini?")) return;
+
+    fetch(`/admin/mapping-group/${id_guru}/${id_mapel}`, {
+        method: 'DELETE'
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        loadMapping();
+    })
+    .catch(err => {
+        console.error(err);
+    });
+}
+
+function logout() {
+    fetch('/logout').then(() => window.location.href='login.html');
+}
+window.onload = function() {
+    showSection('dashboard')
+}
+function tutupModal() {
+    document.getElementById('modalSiswa').style.display = 'none';
+}
+
+function tutupModalLihat() {
+    document.getElementById('modalLihatSiswa').style.display = 'none';
+}
+
+
+</script>
+
+</body>
+</html>

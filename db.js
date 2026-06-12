@@ -1,10 +1,10 @@
 const mysql = require('mysql2');
 
 const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '', // default XAMPP kosong
-  database: 'database'
+  host: 'srv1864.hstgr.io',
+  user: 'u743507397_sistemuser',
+  password: 'PASSWORD_DATABASE_KAMU',
+  database: 'u743507397_sistemnilai'
 });
 
 db.connect((err) => {

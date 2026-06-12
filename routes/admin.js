@@ -1,18 +1,14 @@
 const express = require("express")
 const router = express.Router()
 const db = require("../db")
-
 router.post("/kelas-bulk", (req, res) => {
     const { daftar_kelas } = req.body;
-
     if (!daftar_kelas || daftar_kelas.length === 0) {
         return res.status(400).json({
             message: "Data kelas kosong"
         });
     }
-
     const values = daftar_kelas.map(nama => [nama]);
-
     db.query(
         "INSERT INTO kelas (nama_kelas) VALUES ?",
         [values],
@@ -22,7 +18,6 @@ router.post("/kelas-bulk", (req, res) => {
                     message: err.message
                 });
             }
-
             res.json({
                 message: "Kelas berhasil ditambahkan"
             });

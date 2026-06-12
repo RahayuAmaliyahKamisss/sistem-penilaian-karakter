@@ -441,30 +441,14 @@ router.post('/proses-metode', (req, res) => {
             // ------------------
             // DEFUZZIFIKASI
             // ------------------
-            const pembilang =
-                (ruleKurang * 50) +
-                (ruleCukup * 65) +
-                (ruleBaik * 80) +
-                (ruleSangatBaik * 95);
-
-            const penyebut =
-                ruleKurang +
-                ruleCukup +
-                ruleBaik +
-                ruleSangatBaik;
-
+            const pembilang =(ruleKurang * 50) +(ruleCukup * 65) +(ruleBaik * 80) +(ruleSangatBaik * 95);
+            const penyebut = ruleKurang + ruleCukup + ruleBaik +ruleSangatBaik;
             let nilai_fuzzy = 0;
-
             if (penyebut !== 0) {
-
-                nilai_fuzzy =
-                    pembilang /
-                    penyebut;
+                nilai_fuzzy =pembilang /penyebut;
             }
-
             row.nilai_fuzzy =
-                parseFloat(
-                    nilai_fuzzy.toFixed(2)
+                parseFloat(nilai_fuzzy.toFixed(2)
                 );
         });
 
@@ -473,11 +457,7 @@ router.post('/proses-metode', (req, res) => {
         // ==================================
 
         const mean =
-            dataValid.reduce(
-                (sum, row) =>
-                    sum +
-                    row.nilai_fuzzy,
-                0
+            dataValid.reduce((sum, row) =>sum +row.nilai_fuzzy,0
             ) / dataValid.length;
 
         // ==================================
@@ -485,20 +465,8 @@ router.post('/proses-metode', (req, res) => {
         // ==================================
 
         const variance =
-            dataValid.reduce(
-                (sum, row) =>
-                    sum +
-                    Math.pow(
-                        row.nilai_fuzzy -
-                        mean,
-                        2
-                    ),
-                0
-            ) / dataValid.length;
-
-        const stdDev =
-            Math.sqrt(variance);
-
+            dataValid.reduce((sum, row) =>sum +Math.pow(row.nilai_fuzzy -mean,2),0) / dataValid.length;
+        const stdDev =Math.sqrt(variance);
         // ==================================
         // HAPUS DATA LAMA
         // ==================================
@@ -533,47 +501,23 @@ router.post('/proses-metode', (req, res) => {
                 // ==========================
 
                 dataValid.forEach(row => {
-
                     let nilai_z = 0;
-
                     if (stdDev !== 0) {
-
-                        nilai_z =
-                            (
-                                row.nilai_fuzzy -
-                                mean
-                            ) / stdDev;
+                        nilai_z = (row.nilai_fuzzy - mean) / stdDev;
                     }
-
-                    nilai_z =
-                        parseFloat(
-                            nilai_z.toFixed(4)
-                        );
+                    nilai_z = parseFloat(nilai_z.toFixed(4));
 
                     // ==========================
                     // 6. HYPERPARAMETER
                     // ==========================
 
                     const hyperparameter = 3;
-                    let nilai_akhir =
-                        row.nilai_fuzzy +
-                        (
-                            nilai_z *
-                            hyperparameter
-                        );
-
+                    let nilai_akhir =row.nilai_fuzzy +(nilai_z *hyperparameter);
                     nilai_akhir =
-                        Math.max(
-                            0,
-                            Math.min(
-                                100,
-                                nilai_akhir
-                            )
+                        Math.max(0,Math.min(100,nilai_akhir)
                         );
-
                     nilai_akhir =
-                        parseFloat(
-                            nilai_akhir.toFixed(2)
+                        parseFloat(nilai_akhir.toFixed(2)
                         );
 
                     // ==========================

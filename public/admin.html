@@ -6,6 +6,8 @@
 
 <link rel="stylesheet"
 href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" type="text/css"
+href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
 <title>Admin Dashboard</title>
 <style>
@@ -531,6 +533,22 @@ button.action:hover {
 #kelas_map{
     height:200px;
 }
+.toastify {
+    border-radius: 12px !important;
+    padding: 14px 18px !important;
+    font-family: 'Outfit', sans-serif !important;
+    font-weight: 500 !important;
+    box-shadow: 0 8px 20px rgba(0,0,0,.15) !important;
+    font-size: 14px !important;
+}
+
+.toast-success {
+    background: linear-gradient(135deg, #2e7d32, #43a047) !important;
+}
+
+.toast-error {
+    background: linear-gradient(135deg, #c62828, #e53935) !important;
+}
 @media (max-width:768px){
 
     body{
@@ -600,6 +618,8 @@ button.action:hover {
 
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <body>
 <div class="layout">
     <div class="sidebar">
@@ -1030,7 +1050,7 @@ async function tambahGuru() {
         });
 
         const data = await res.json();
-        alert(data.message);
+        showToast(data.message);
 
         if (res.ok) {
             // kosongkan form
@@ -1047,23 +1067,32 @@ async function tambahGuru() {
         }
     } catch (error) {
         console.error(error);
-        alert('Terjadi kesalahan saat menyimpan data guru.');
+        showToast('Terjadi kesalahan saat menyimpan data guru.', false);
     }
 }
-function hapusGuru(id) {
-    if (!confirm("Yakin ingin menghapus guru ini?")) return;
+async function hapusGuru(id) {
+    const result = await Swal.fire({
+        title: 'Hapus Guru?',
+        text: 'Data guru akan dihapus permanen',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Hapus',
+        cancelButtonText: 'Batal'
+    });
+
+    if (!result.isConfirmed) return;
 
     fetch(`/admin/guru/${id}`, {
         method: "DELETE"
     })
     .then(res => res.json())
     .then(data => {
-        alert(data.message);
+        showToast(data.message);
         loadGuru();
     })
     .catch(err => {
         console.error(err);
-        alert("Gagal menghapus data.");
+        showToast("Gagal menghapus data.", false);
     });
 }
 
@@ -1152,25 +1181,13 @@ function tambahKelas() {
     })
     .then(res => res.json())
     .then(data => {
-        alert(data.message);
+        showToast(data.message);
         tutupModalKelas();
         loadKelas();
     })
 }
 function editKelas(id) {
-    alert("Edit kelas ID: " + id);
-}
-function hapusKelas(id) {
-    if (!confirm("Yakin ingin menghapus kelas ini?")) return;
-
-    fetch(`/admin/kelas/${id}`, {
-        method: 'DELETE'
-    })
-    .then(res => res.json())
-    .then(data => {
-        alert(data.message);
-        loadKelas();
-    });
+    showToast("Edit kelas ID: " + id);
 }
 function bukaFormBulk(id_kelas) {
 
@@ -1218,7 +1235,7 @@ function simpanBulkSiswa() {
     })
     .then(res => res.json())
     .then(data => {
-        alert(data.message);
+        showToast(data.message);
         document.getElementById('modalSiswa').style.display = 'none';
         loadKelas();
     });
@@ -1287,7 +1304,7 @@ function tambahSiswa() {
     })
     .then(res => res.json())
     .then(data => {
-        alert(data.message);
+        showToast(data.message);
 
         document.getElementById('nama_siswa').value = '';
         document.getElementById('formSiswa').style.display = 'none';
@@ -1295,20 +1312,32 @@ function tambahSiswa() {
         loadSiswa();
     });
 }
-function hapusSiswa(id) {
-    if (!confirm("Yakin ingin menghapus siswa ini?")) return;
+async function hapusSiswa(id) {
+
+    const result = await Swal.fire({
+        title: 'Hapus Siswa?',
+        text: 'Data siswa akan dihapus permanen',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Hapus',
+        cancelButtonText: 'Batal'
+    });
+
+    if (!result.isConfirmed) return;
 
     fetch(`/admin/siswa/${id}`, {
         method: 'DELETE'
     })
     .then(res => res.json())
     .then(data => {
-        alert(data.message);
+        showToast(data.message);
         loadSiswa();
+    })
+    .catch(err => {
+        console.error(err);
+        showToast('Gagal menghapus siswa.', false);
     });
 }
-
-
 function loadMapelDropdown() {
     fetch('/admin/mapel')
     .then(res => res.json())
@@ -1344,7 +1373,7 @@ function tambahBarisSiswa(nama = '') {
         .appendChild(row);
 }
 function lihatKelas(daftarKelas) {
-    alert("Kelas yang diajar:\n\n" + daftarKelas.replace(/, /g, "\n"));
+    showToast("Kelas yang diajar:\n\n" + daftarKelas.replace(/, /g, "\n"));
 }
 function mapping() {
     const selectedKelas = Array.from(
@@ -1364,7 +1393,7 @@ function mapping() {
     })
     .then(res => res.json())
     .then(data => {
-        alert(data.message);
+        showToast(data.message);
         document.getElementById('modalMapping').style.display = 'none';
         loadMapping();
     });
@@ -1426,23 +1455,32 @@ function editMapping(id_guru, id_mapel) {
         }
     });
 }
-function hapusMapping(id_guru, id_mapel) {
+async function hapusMapping(id_guru, id_mapel) {
 
-    if (!confirm("Yakin ingin menghapus mapping ini?")) return;
+    const result = await Swal.fire({
+        title: 'Hapus Mapping?',
+        text: 'Relasi guru dan kelas akan dihapus',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Hapus',
+        cancelButtonText: 'Batal'
+    });
+
+    if (!result.isConfirmed) return;
 
     fetch(`/admin/mapping-group/${id_guru}/${id_mapel}`, {
         method: 'DELETE'
     })
     .then(res => res.json())
     .then(data => {
-        alert(data.message);
+        showToast(data.message);
         loadMapping();
     })
     .catch(err => {
         console.error(err);
+        showToast('Gagal menghapus mapping.', false);
     });
 }
-
 function logout() {
     fetch('/logout').then(() => window.location.href='login.html');
 }
@@ -1456,7 +1494,21 @@ function tutupModal() {
 function tutupModalLihat() {
     document.getElementById('modalLihatSiswa').style.display = 'none';
 }
+function showToast(message, success = true) {
 
+    Toastify({
+        text: `${success ? '✅' : '❌'} ${message}`,
+        duration: 3000,
+        gravity: "top",
+        position: "right",
+        close: true,
+        stopOnFocus: true,
+        className: success
+            ? "toast-success"
+            : "toast-error"
+
+    }).showToast();
+}
 
 </script>
 

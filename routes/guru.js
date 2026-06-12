@@ -40,6 +40,7 @@ router.get('/kelas', (req, res) => {
 
 router.get('/siswa/:id_kelas', (req, res) => {
     const { id_kelas } = req.params;
+    const id_guru = req.session.user.id;
         const sql = `
             SELECT
                 s.id,
@@ -55,10 +56,11 @@ router.get('/siswa/:id_kelas', (req, res) => {
             FROM siswa s
 
             LEFT JOIN nilai_akademik na
-                ON s.id = na.id_siswa
+            ON s.id = na.id_siswa
+            AND na.id_guru = ?
 
             LEFT JOIN jawaban j
-                ON s.id = j.id_siswa
+                ON s.id = j.id_siswa  AND j.id_guru = ?
 
             WHERE s.id_kelas = ?
 
@@ -69,7 +71,7 @@ router.get('/siswa/:id_kelas', (req, res) => {
 
             ORDER BY s.nama
         `;
-    db.query(sql, [id_kelas], (err, result) => {
+    db.query(sql, [id_guru, id_guru, id_kelas], (err, result) => {
         if (err) {
             console.log('Error /siswa:', err);
             return res.status(500).json({
@@ -133,7 +135,7 @@ router.get('/kuesioner', (req, res) => {
 
 router.post('/kuesioner/simpan', (req, res) => {
     const { id_siswa, jawaban } = req.body;
-
+    const id_guru = req.session.user.id;
     if (!id_siswa || !jawaban || jawaban.length === 0) {
         return res.status(400).json({
             message: 'Data tidak lengkap'
@@ -142,8 +144,8 @@ router.post('/kuesioner/simpan', (req, res) => {
 
     // Hapus jawaban lama
     db.query(
-        'DELETE FROM jawaban WHERE id_siswa = ?',
-        [id_siswa],
+        'DELETE FROM jawaban WHERE id_siswa = ? AND id_guru = ?',
+        [id_siswa, id_guru],
         (err) => {
             if (err) {
                 console.log('Error delete jawaban:', err);
@@ -157,14 +159,15 @@ router.post('/kuesioner/simpan', (req, res) => {
             jawaban.forEach(item => {
                 const sql = `
                     INSERT INTO jawaban
-                    (id_siswa, id_pertanyaan, skor)
-                    VALUES (?, ?, ?)
+                    (id_siswa, id_guru, id_pertanyaan, skor)
+                    VALUES (?, ?, ?, ?)
                 `;
 
                 db.query(
                     sql,
                     [
                         id_siswa,
+                        id_guru,
                         item.id_pertanyaan,
                         item.skor
                     ],
@@ -191,7 +194,7 @@ router.post('/kuesioner/simpan', (req, res) => {
 });
 router.get('/hasil/:id_siswa', (req, res) => {
     const { id_siswa } = req.params;
-
+    const id_guru = req.session.user.id;
     const sql = `
         SELECT
             i.nama AS nama_indikator,
@@ -199,11 +202,12 @@ router.get('/hasil/:id_siswa', (req, res) => {
         FROM jawaban j
         JOIN pertanyaan p ON j.id_pertanyaan = p.id
         JOIN indikator i ON p.id_indikator = i.id
-        WHERE j.id_siswa = ?
+        WHERE j.id_siswa = ? AND j.id_guru = ?
         GROUP BY i.id, i.nama
     `;
 
-    db.query(sql, [id_siswa], (err, indikator) => {
+    db.query(sql, [id_siswa, id_guru], (err, indikator) => {
+        const id_guru = req.session.user.id;
         if (err) {
             return res.status(500).json({
                 message: err.message
@@ -211,8 +215,9 @@ router.get('/hasil/:id_siswa', (req, res) => {
         }
 
         db.query(
-            'SELECT nilai FROM nilai_akademik WHERE id_siswa = ? LIMIT 1',
-            [id_siswa],
+            
+            'SELECT nilai FROM nilai_akademik WHERE id_siswa = ? AND id_guru = ? LIMIT 1',
+            [id_siswa, id_guru],
             (err2, akademik) => {
                 if (err2) {
                     return res.status(500).json({
@@ -242,13 +247,13 @@ router.get('/hasil-kelas/:id_kelas', (req, res) => {
             ha.total AS skor_sikap,
             ha.kategori
         FROM siswa s
-        LEFT JOIN nilai_akademik na ON s.id = na.id_siswa
-        LEFT JOIN hasil_akhir ha ON s.id = ha.id_siswa
+        LEFT JOIN nilai_akademik na ON s.id = na.id_siswa AND na.id_guru = ?
+        LEFT JOIN hasil_akhir ha ON s.id = ha.id_siswa AND ha.id_guru = ?
         WHERE s.id_kelas = ?
         ORDER BY s.nama ASC
     `;
-
-    db.query(sql, [id_kelas], (err, results) => {
+    const id_guru = req.session.user.id;
+    db.query(sql, [id_guru, id_kelas], (err, results) => {
         if (err) {
             console.error(err);
             return res.status(500).json({
@@ -261,7 +266,7 @@ router.get('/hasil-kelas/:id_kelas', (req, res) => {
 });
 router.get('/hasil-akhir/:id_kelas', (req, res) => {
     const { id_kelas } = req.params;
-
+    const id_guru = req.session.user.id;
     const sql = `
         SELECT
             s.id,
@@ -273,14 +278,16 @@ router.get('/hasil-akhir/:id_kelas', (req, res) => {
             ha.kategori
         FROM siswa s
         LEFT JOIN nilai_akademik na
-            ON s.id = na.id_siswa
+            ON s.id = na.id_siswa 
+            AND na.id_guru = ?
         LEFT JOIN hasil_akhir ha
             ON s.id = ha.id_siswa
+            AND ha.id_guru = ?
         WHERE s.id_kelas = ?
         ORDER BY s.nama ASC
     `;
 
-    db.query(sql, [id_kelas], (err, results) => {
+    db.query(sql, [id_guru, id_guru, id_kelas], (err, results) => {
         if (err) {
             console.error('Error mengambil hasil akhir:', err);
             return res.status(500).json({
@@ -293,7 +300,7 @@ router.get('/hasil-akhir/:id_kelas', (req, res) => {
 });
 router.post('/nilai-akademik/simpan', (req, res) => {
     const { id_siswa, nilai } = req.body;
-
+    const id_guru = req.session.user.id;
     if (!id_siswa || nilai === undefined) {
         return res.status(400).json({
             message: 'Data tidak lengkap'
@@ -302,8 +309,8 @@ router.post('/nilai-akademik/simpan', (req, res) => {
 
     // Hapus data lama agar bisa update
     db.query(
-        'DELETE FROM nilai_akademik WHERE id_siswa = ?',
-        [id_siswa],
+        'DELETE FROM nilai_akademik WHERE id_siswa = ? AND id_guru=?',
+        [id_siswa, id_guru],
         (err) => {
             if (err) {
                 return res.status(500).json({
@@ -312,8 +319,8 @@ router.post('/nilai-akademik/simpan', (req, res) => {
             }
 
             db.query(
-                'INSERT INTO nilai_akademik (id_siswa, nilai) VALUES (?, ?)',
-                [id_siswa, nilai],
+                'INSERT INTO nilai_akademik (id_siswa, id_guru, nilai) VALUES (?, ?, ?)',
+                [id_siswa, id_guru, nilai],
                 (err2) => {
                     if (err2) {
                         return res.status(500).json({
@@ -330,7 +337,7 @@ router.post('/nilai-akademik/simpan', (req, res) => {
     );
 });
 router.post('/proses-metode', (req, res) => {
-
+    const id_guru = req.session.user.id;
     const { id_kelas } = req.body;
 
     if (!id_kelas) {
@@ -346,13 +353,13 @@ router.post('/proses-metode', (req, res) => {
             AVG(j.skor) AS nilai_karakter
         FROM siswa s
         LEFT JOIN jawaban j
-            ON s.id = j.id_siswa
+            ON s.id = j.id_siswa AND j.id_guru = ?
         WHERE s.id_kelas = ?
         GROUP BY s.id, s.nama
         ORDER BY s.nama ASC
     `;
 
-    db.query(sql, [id_kelas], (err, rows) => {
+    db.query(sql, [id_guru, id_kelas], (err, rows) => {
 
         if (err) {
             return res.status(500).json({
@@ -477,11 +484,12 @@ router.post('/proses-metode', (req, res) => {
             JOIN siswa s
                 ON ha.id_siswa = s.id
             WHERE s.id_kelas = ?
+            AND ha.id_guru = ?
         `;
 
         db.query(
             deleteSql,
-            [id_kelas],
+            [id_kelas, id_guru],
             (err) => {
 
                 if (err) {
@@ -551,22 +559,23 @@ router.post('/proses-metode', (req, res) => {
                     // ==========================
 
                     const insertSql = `
-                    
-                        INSERT INTO hasil_akhir
-                        (
-                            id_siswa,
-                            total,
-                            nilai_z,
-                            nilai_fuzzy,
-                            kategori
-                        )
-                        VALUES (?, ?, ?, ?, ?)
+                    INSERT INTO hasil_akhir
+                    (
+                        id_siswa,
+                        id_guru,
+                        total,
+                        nilai_z,
+                        nilai_fuzzy,
+                        kategori
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?)
                     `;
 
                     db.query(
                         insertSql,
                         [
                             row.id,
+                            id_guru,
                             row.total,
                             nilai_z,
                             nilai_akhir,

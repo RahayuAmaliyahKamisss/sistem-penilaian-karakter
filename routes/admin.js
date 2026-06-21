@@ -51,8 +51,6 @@ router.delete("/kelas/:id", (req, res) => {
                             message: err2.message
                         });
                     }
-
-                    // hapus kelas
                     db.query(
                         "DELETE FROM kelas WHERE id = ?",
                         [id],

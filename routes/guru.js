@@ -141,8 +141,6 @@ router.post('/kuesioner/simpan', (req, res) => {
             message: 'Data tidak lengkap'
         });
     }
-
-    // Hapus jawaban lama
     db.query(
         'DELETE FROM jawaban WHERE id_siswa = ? AND id_guru = ?',
         [id_siswa, id_guru],

@@ -42,7 +42,9 @@ router.get('/kelas', (req, res) => {
 
 router.get('/siswa/:id_kelas', (req, res) => {
     const { id_kelas } = req.params;
-    const id_guru = req.session.user.id;
+    const id_guru = req.query.id_guru;
+
+    console.log("ID GURU =", id_guru);
         const sql = `
             SELECT
                 s.id,
@@ -267,7 +269,7 @@ router.get('/hasil-kelas/:id_kelas', (req, res) => {
 });
 router.get('/hasil-akhir/:id_kelas', (req, res) => {
     const { id_kelas } = req.params;
-    const id_guru = req.session.user.id;
+    const id_guru = req.query.id_guru;
     const sql = `
         SELECT
             s.id,
@@ -300,8 +302,8 @@ router.get('/hasil-akhir/:id_kelas', (req, res) => {
     });
 });
 router.post('/nilai-akademik/simpan', (req, res) => {
-    const { id_siswa, nilai } = req.body;
-    const id_guru = req.session.user.id;
+    const id_guru = req.session.id_guru;
+    const { id_siswa, nilai, id_guru } = req.body;
     if (!id_siswa || nilai === undefined) {
         return res.status(400).json({
             message: 'Data tidak lengkap'
@@ -338,8 +340,8 @@ router.post('/nilai-akademik/simpan', (req, res) => {
     );
 });
 router.post('/proses-metode', (req, res) => {
-    const id_guru = req.session.user.id;
-    const { id_kelas } = req.body;
+    const id_guru = req.session.id_guru;
+    const { id_kelas, id_guru } = req.body;
 
     if (!id_kelas) {
         return res.status(400).json({

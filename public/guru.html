@@ -656,14 +656,19 @@ function showSection(id) {
     }
 }
 function loadKelasUntukProses() {
-    fetch('/guru/kelas', {
-    credentials: 'include'
-    })
+
+    const id_guru =
+        localStorage.getItem("id_guru");
+
+    fetch(`/guru/kelas?id_guru=${id_guru}`)
     .then(res => res.json())
     .then(data => {
-        let html = '<option value="">-- Pilih Kelas --</option>';
+
+        let html =
+            '<option value="">-- Pilih Kelas --</option>';
 
         data.forEach(item => {
+
             html += `
                 <option value="${item.id_kelas}">
                     ${item.nama_mapel} - ${item.nama_kelas}
@@ -671,11 +676,16 @@ function loadKelasUntukProses() {
             `;
         });
 
-        document.getElementById('selectKelasProses').innerHTML = html;
+        document.getElementById(
+            'selectKelasProses'
+        ).innerHTML = html;
     });
 }
 function loadKelasGuru() {
-    fetch('/guru/kelas')
+    const id_guru =
+    localStorage.getItem("id_guru");
+
+    fetch(`/guru/kelas?id_guru=${id_guru}`)
     .then(res => {
         if (!res.ok) throw new Error('Gagal memuat data');
         return res.json();

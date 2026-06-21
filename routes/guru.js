@@ -3,11 +3,14 @@ const router = express.Router();
 const db = require('../db');
 
 router.get('/kelas', (req, res) => {
-    const userId = req.session.user?.id;
+
+    const userId = req.query.id_guru;
+
+    console.log("ID GURU =", userId);
 
     if (!userId) {
         return res.status(401).json({
-            message: 'Unauthorized'
+            message: 'ID Guru tidak ditemukan'
         });
     }
 
@@ -27,7 +30,7 @@ router.get('/kelas', (req, res) => {
 
     db.query(sql, [userId], (err, result) => {
         if (err) {
-            console.log('Error /kelas:', err);
+            console.log(err);
             return res.status(500).json({
                 message: err.message
             });
@@ -36,7 +39,6 @@ router.get('/kelas', (req, res) => {
         res.json(result);
     });
 });
-
 
 router.get('/siswa/:id_kelas', (req, res) => {
     const { id_kelas } = req.params;

@@ -290,11 +290,22 @@ function login() {
 
         if (data.success) {
 
-            if (data.user.role === "admin") {
-                window.location.href = "admin.html";
-            } else {
-                window.location.href = "guru.html";
-            }
+            localStorage.setItem(
+        "id_guru",
+        data.user.id
+    );
+
+    console.log(
+        "ID Guru tersimpan:",
+        data.user.id
+    );
+
+    if (data.user.role === "admin") {
+        window.location.href = "admin.html";
+    } else {
+        window.location.href = "guru.html";
+    }
+
 
         } else {
             alert("Login gagal");

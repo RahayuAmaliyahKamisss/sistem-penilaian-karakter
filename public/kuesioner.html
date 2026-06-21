@@ -221,8 +221,9 @@ function simpanKuesioner() {
             skor: s.value
         });
     }
-    console.log("ID GURU =", id_guru);
-    console.log(localStorage.getItem("id_guru"));
+    const id_guru =
+        localStorage.getItem("id_guru");
+    console.log("ID GURU:", id_guru);
         fetch('/guru/kuesioner/simpan', {
         method: 'POST',
         credentials: 'include',

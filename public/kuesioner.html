@@ -222,8 +222,9 @@ function simpanKuesioner() {
         });
     }
 
-    fetch('/guru/kuesioner/simpan', {
+        fetch('/guru/kuesioner/simpan', {
         method: 'POST',
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json'
         },

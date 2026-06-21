@@ -136,10 +136,7 @@ router.get('/kuesioner', (req, res) => {
 router.post('/kuesioner/simpan', (req, res) => {
     console.log("SESSION =", req.session);
     console.log("USER =", req.session.user);
-
-    const { id_siswa, jawaban } = req.body;
-
-    const id_guru = req.session.user.id;
+   const { id_siswa, id_guru, jawaban } = req.body;
     if (!id_siswa || !jawaban || jawaban.length === 0) {
         return res.status(400).json({
             message: 'Data tidak lengkap'

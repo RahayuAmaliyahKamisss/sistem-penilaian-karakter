@@ -656,7 +656,9 @@ function showSection(id) {
     }
 }
 function loadKelasUntukProses() {
-    fetch('/guru/kelas')
+    fetch('/guru/kelas', {
+    credentials: 'include'
+    })
     .then(res => res.json())
     .then(data => {
         let html = '<option value="">-- Pilih Kelas --</option>';

@@ -43,7 +43,11 @@ router.get('/kelas', (req, res) => {
 router.get('/siswa/:id_kelas', (req, res) => {
     const { id_kelas } = req.params;
     const id_guru = req.query.id_guru;
-
+    if (!id_guru) {
+    return res.status(401).json({
+        message: 'ID Guru tidak ditemukan'
+        });
+    }
     console.log("ID GURU =", id_guru);
         const sql = `
             SELECT
@@ -197,7 +201,12 @@ router.post('/kuesioner/simpan', (req, res) => {
 });
 router.get('/hasil/:id_siswa', (req, res) => {
     const { id_siswa } = req.params;
-    const id_guru = req.session.user.id;
+    const id_guru = req.query.id_guru;
+    if (!id_guru) {
+    return res.status(401).json({
+        message: 'ID Guru tidak ditemukan'
+    });
+    }
     const sql = `
         SELECT
             i.nama AS nama_indikator,
@@ -210,7 +219,6 @@ router.get('/hasil/:id_siswa', (req, res) => {
     `;
 
     db.query(sql, [id_siswa, id_guru], (err, indikator) => {
-        const id_guru = req.session.user.id;
         if (err) {
             return res.status(500).json({
                 message: err.message
@@ -255,8 +263,8 @@ router.get('/hasil-kelas/:id_kelas', (req, res) => {
         WHERE s.id_kelas = ?
         ORDER BY s.nama ASC
     `;
-    const id_guru = req.session.user.id;
-    db.query(sql, [id_guru, id_kelas], (err, results) => {
+    const id_guru = req.query.id_guru;
+    db.query(sql, [id_guru, id_guru, id_kelas], (err, results) => {
         if (err) {
             console.error(err);
             return res.status(500).json({
@@ -302,7 +310,6 @@ router.get('/hasil-akhir/:id_kelas', (req, res) => {
     });
 });
 router.post('/nilai-akademik/simpan', (req, res) => {
-    const id_guru = req.session.id_guru;
     const { id_siswa, nilai, id_guru } = req.body;
     if (!id_siswa || nilai === undefined) {
         return res.status(400).json({
@@ -340,7 +347,6 @@ router.post('/nilai-akademik/simpan', (req, res) => {
     );
 });
 router.post('/proses-metode', (req, res) => {
-    const id_guru = req.session.id_guru;
     const { id_kelas, id_guru } = req.body;
 
     if (!id_kelas) {

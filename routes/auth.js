@@ -49,4 +49,10 @@ router.post("/login", (req, res) => {
 router.get("/cek-session", (req, res) => {
     res.json(req.session);
 });
+router.get("/debug-session", (req, res) => {
+    res.json({
+        sessionID: req.sessionID,
+        session: req.session
+    });
+});
 module.exports = router

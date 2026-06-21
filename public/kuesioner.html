@@ -221,7 +221,8 @@ function simpanKuesioner() {
             skor: s.value
         });
     }
-
+    console.log("ID GURU =", id_guru);
+    console.log(localStorage.getItem("id_guru"));
         fetch('/guru/kuesioner/simpan', {
         method: 'POST',
         credentials: 'include',
@@ -230,6 +231,7 @@ function simpanKuesioner() {
         },
         body: JSON.stringify({
             id_siswa,
+            id_guru,
             jawaban
         })
     })

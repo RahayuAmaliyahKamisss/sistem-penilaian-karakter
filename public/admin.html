@@ -747,7 +747,7 @@ button.action:hover {
     <h2>Data Kelas</h2>
 
     <div class="topbar">
-        <input placeholder="Search...">
+        <input type="text" id="searchKelas" placeholder="Search...">
         <button class="action" onclick="bukaModalKelas()">+ Tambah Kelas</button>
     </div>
 
@@ -1002,6 +1002,26 @@ function loadGuru() {
         tbody.innerHTML = html;
     });
 }
+function cariGuru() {
+
+    const keyword = document
+        .getElementById("searchGuru")
+        .value
+        .toLowerCase();
+
+    const rows = document.querySelectorAll("#tableGuru tbody tr");
+
+    rows.forEach(row => {
+
+        if(row.innerText.toLowerCase().includes(keyword)){
+            row.style.display = "";
+        }else{
+            row.style.display = "none";
+        }
+
+    });
+
+}
 function loadGuruDropdown() {
     fetch('/admin/guru')
     .then(res => res.json())
@@ -1163,6 +1183,28 @@ function tambahBarisKelas(nama = '') {
     `;
 
     document.getElementById('listInputKelas').appendChild(row);
+}
+function cariKelas() {
+
+    const keyword = document
+        .getElementById("searchKelas")
+        .value
+        .toLowerCase();
+
+    const rows = document.querySelectorAll("#tableKelas tr");
+
+    rows.forEach((row,index)=>{
+
+        if(index===0) return;
+
+        if(row.innerText.toLowerCase().includes(keyword)){
+            row.style.display="";
+        }else{
+            row.style.display="none";
+        }
+
+    });
+
 }
 function tambahKelas() {
 
@@ -1508,10 +1550,20 @@ async function hapusMapping(id_guru, id_mapel) {
     });
 }
 function logout() {
-    fetch('/logout').then(() => window.location.href='login.html');
+    fetch('/logout')
+    .then(() => window.location.href = "/");
 }
 window.onload = function() {
     showSection('dashboard')
+    const searchGuru = document.getElementById("searchGuru");
+    if (searchGuru) {
+        searchGuru.addEventListener("keyup", cariGuru);
+    }
+
+    const searchKelas = document.getElementById("searchKelas");
+    if (searchKelas) {
+        searchKelas.addEventListener("keyup", cariKelas);
+    }
 }
 function tutupModal() {
     document.getElementById('modalSiswa').style.display = 'none';

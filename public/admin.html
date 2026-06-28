@@ -1338,6 +1338,32 @@ async function hapusSiswa(id) {
         showToast('Gagal menghapus siswa.', false);
     });
 }
+async function hapusKelas(id) {
+
+    const result = await Swal.fire({
+        title: 'Hapus Kelas?',
+        text: 'Semua siswa dan mapping pada kelas ini juga akan dihapus.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Hapus',
+        cancelButtonText: 'Batal'
+    });
+
+    if (!result.isConfirmed) return;
+
+    fetch(`/admin/kelas/${id}`, {
+        method: 'DELETE'
+    })
+    .then(res => res.json())
+    .then(data => {
+        showToast(data.message);
+        loadKelas();
+    })
+    .catch(err => {
+        console.error(err);
+        showToast('Gagal menghapus kelas', false);
+    });
+}
 function loadMapelDropdown() {
     fetch('/admin/mapel')
     .then(res => res.json())

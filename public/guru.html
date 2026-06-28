@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <title>Dashboard Guru</title>
 <link rel="stylesheet"
-href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <style>
 @font-face {
     font-family: 'Outfit';
@@ -291,40 +292,6 @@ tr:hover{
     display:block;
     margin-top:8px;
 }
-.toast{
-    position:fixed;
-    top:20px;
-    right:20px;
-    min-width:280px;
-    max-width:380px;
-    padding:14px 18px;
-    border-radius:12px;
-    color:#fff;
-    font-size:14px;
-    font-weight:400;
-    backdrop-filter:blur(10px);
-    box-shadow:
-    0 6px 20px rgba(0,0,0,.12);
-    opacity:0;
-    visibility:hidden;
-    transition:
-    opacity .4s ease,
-    visibility .4s ease;
-    z-index:99999;
-}
-.toast.show{
-    opacity:1;
-    visibility:visible;
-}
-.toast.Success{
-    background:rgba(46,125,50,.88);
-    border-left:4px solid #81c784;
-}
-
-.toast.error{
-    background:rgba(211,47,47,.88);
-    border-left:4px solid #ef9a9a;
-}
 .export-icon-inline {
     width: 44px;
     height: 44px;
@@ -344,18 +311,58 @@ tr:hover{
 
     transition: .25s;
 }
-
 .export-icon-inline i {
     font-size: 18px;
 }
-
 .export-icon-inline:hover {
     transform: translateY(-2px) scale(1.05);
     box-shadow: 0 10px 20px rgba(0,0,0,.2);
 }
-/* =========================
-   MOBILE RESPONSIVE
-========================= */
+.swal2-popup:not(.swal2-toast){
+    font-family:'Outfit',sans-serif;
+}
+.swal2-toast{
+    border-radius:16px !important;
+    box-shadow:0 12px 30px rgba(0,0,0,.18) !important;
+    padding:14px 18px !important;
+    animation:fadeIn .3s ease;
+}
+.swal2-title{
+    font-size:15px !important;
+    font-weight:600 !important;
+    margin:0 !important;
+}
+.swal2-toast{
+     font-family:'Outfit',sans-serif;
+    border-radius:16px;
+    box-shadow:0 12px 30px rgba(0,0,0,.15);
+    padding:14px 18px;
+}
+.swal2-toast .swal2-title{
+    font-size:15px;
+    font-weight:600;
+}
+.swal2-toast .swal2-icon{
+    margin:0 10px 0 0 !important;
+}
+.swal2-toast .swal2-success-ring{
+    border-width:4px;
+}
+.swal2-success-ring{
+    border-width:3px !important;
+}
+@keyframes fadeIn{
+    from{
+        transform:translateX(30px);
+        opacity:0;
+    }
+
+    to{
+        transform:translateX(0);
+        opacity:1;
+    }
+}
+/*Mobile Responsive*/
 @media (max-width:768px){
     .layout{
         flex-direction:column;
@@ -452,11 +459,30 @@ tr:hover{
         right:10px;
         min-width:auto;
     }
+    .swal2-container{
+    padding:12px !important;
+}
+    .swal2-toast{
+        width:100% !important;
+        max-width:360px !important;
+        padding:12px 16px !important;
+        border-radius:14px !important;
+    }
+    .swal2-toast .swal2-title{
+        font-size:14px !important;
+        line-height:1.4;
+    }
+    .swal2-toast .swal2-icon{
+        transform:scale(.8);
+        margin-right:10px !important;
+    }
+    .swal2-timer-progress-bar{
+        height:4px;
+    }
 }
 </style>
 </head>
 <body>
-<div id="toast" class="toast"></div>
 <div id="popupNilai" class="popup-overlay">
     
     <div class="popup-content popup-kecil">
@@ -704,7 +730,7 @@ tr:hover{
     const pesan = sessionStorage.getItem('toastSuccess');
 
     if (pesan) {
-        showToast(pesan, 'Success');
+        showToast(pesan, 'success');
         sessionStorage.removeItem('toastSuccess');
     }
 
@@ -807,7 +833,7 @@ function loadKelasGuru() {
     })
     .catch(err => {
         console.error(err);
-        showToast('Gagal Memuat Kelas Guru', 'error');
+        showToast('Gagal Memuat Kelas Guru.', 'warning');
     });
 }
 function lihatHasil(id_siswa) {
@@ -919,7 +945,7 @@ fetch(`/guru/siswa/${id_kelas}?id_guru=${id_guru}`)
     })
     .catch(err => {
         console.error(err);
-        showToast('Gagal Memuat Data Siswa', 'error');
+        showToast('Gagal Memuat Data Siswa', 'warning');
     });
 }
 function loadKelasDataSiswa() {
@@ -946,14 +972,14 @@ function loadKelasDataSiswa() {
     })
     .catch(err => {
         console.error(err);
-        showToast('Gagal Memuat Daftar Kelas Untuk Data Siswa', 'error');
+        showToast('Gagal Memuat Daftar Kelas Untuk Data Siswa', 'warning');
     });
 }
 function loadDataSiswa() {
     const id_kelas = document.getElementById('selectKelasDataSiswa').value;
 
     if (!id_kelas) {
-        showToast('Silahkan Pilih Kelas Dulu', 'error');
+        showToast('Silakan pilih kelas terlebih dahulu.', 'warning');
         return;
     }
 
@@ -1025,7 +1051,7 @@ function simpanNilaiAkademik() {
     const nilai = document.getElementById('inputNilaiAkademik').value;
 
     if (nilai === '') {
-        showToast('Nilai Akademik Harus Diisi', 'error');
+        showToast('Nilai Akademik Harus Diisi', 'warning');
         return;
     }
 
@@ -1042,11 +1068,8 @@ function simpanNilaiAkademik() {
     })
     .then(res => res.json())
     .then(data => {
-        showToast('Nilai Berhasil Disimpan', 'Success');
-
+        showToast("Nilai akademik berhasil disimpan.");
         tutupPopupNilai();
-
-        // Refresh tabel siswa
         if (selectedKelasId) {
             loadSiswa(selectedKelasId);
         }
@@ -1060,14 +1083,11 @@ function simpanKuesioner() {
     // Ambil semua dropdown jawaban
     const selects = document.querySelectorAll('select[data-id]');
     let jawaban = [];
-
-    // Validasi semua pertanyaan harus diisi
     for (const select of selects) {
         if (select.value === '') {
-            showToast('Semua Pertanyaan Harus Diisi', 'error');
+            showToast('Semua Pertanyaan Harus Diisi', 'warning');
             return;
         }
-
         jawaban.push({
             id_pertanyaan: parseInt(select.dataset.id),
             skor: parseInt(select.value)
@@ -1077,8 +1097,6 @@ function simpanKuesioner() {
         showToast('ID Siswa Tidak Ditemukan', 'error');
         return;
     }
-
-    // Kirim data ke backend
     fetch('/guru/kuesioner/simpan', {
         method: 'POST',
         headers: {
@@ -1104,43 +1122,52 @@ function simpanKuesioner() {
 })
     .catch(error => {
         console.error('Error:', error);
-        showToast(
-            data.message || 'Terjadi Kesalahan Saat Menyimpan Kuesioner.', 'error'
+         showToast(
+        'Terjadi kesalahan saat menyimpan kuesioner.','error'
         );
     });
 }
 function prosesMetode() {
     const id_kelas = document.getElementById('selectKelasProses').value;
-
     if (!id_kelas) {
-        showToast('Silahkan Pilih Kelas Lebih Dulu', 'error');
+        showToast('Silahkan Pilih Kelas Lebih Dulu', 'warning');
         return;
     }
-
-    if (!confirm('Proses nilai untuk kelas ini?')) {
-        return;
-    }
-
-    fetch('/guru/proses-metode', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            id_kelas,
-            id_guru: localStorage.getItem("id_guru")
+    Swal.fire({
+        title: 'Proses Metode',
+        text: 'Apakah Anda yakin ingin memproses nilai kelas ini?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#2e7d32',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Proses',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+        fetch('/guru/proses-metode', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id_kelas,
+                id_guru: localStorage.getItem("id_guru")
+            })
         })
-    })
-    .then(res => res.json())
-    .then(data => {
-        showToast('Proses Berhasul', 'success');
-
-        // Tampilkan hasil proses ke tabel
-        loadHasilProses(id_kelas);
-    })
-    .catch(err => {
-        console.error(err);
-        showToast('Gagal Memproses Metode', 'error');
+        .then(res => res.json())
+        .then(data => {
+            showToast(
+                'Perhitungan metode berhasil dilakukan.'
+            );
+            loadHasilProses(id_kelas);
+        })
+        .catch(err => {
+            console.error(err);
+            showToast(
+                'Gagal memproses metode.',
+                'error'
+            );
+        });
     });
 }
 function loadHasilProses(id_kelas) {
@@ -1195,14 +1222,25 @@ function logout() {
     .then(() => {
         window.location.href = 'login.html';
     });
+    showToast("Berhasil logout.");
+    setTimeout(()=>{
+    window.location.href="login.html";
+    },1000);
 }
-function showToast(message, type='success') {
-    const toast = document.getElementById('toast');
-    toast.innerText = message;
-    toast.className = `toast ${type} show`;
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 3000);
+function showToast(message, type = "success") {
+    Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: type,
+        title: message,
+        showConfirmButton: false,
+        timer: 2500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer);
+            toast.addEventListener('mouseleave', Swal.resumeTimer);
+        }
+    });
 }
 function exportExcel() {
     const table = document.querySelector("#hasilDataSiswa table");
@@ -1218,6 +1256,9 @@ function exportExcel() {
     a.href = 'data:application/vnd.ms-excel,' + html;
     a.download = 'data-hasil-siswa.xls';
     a.click();
+    showToast(
+    'File Excel berhasil diunduh.'
+    );
 }
 let selectedSiswaId = null;
 let selectedKelasId = null;

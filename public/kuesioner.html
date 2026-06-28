@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kuesioner Penilaian Karakter</title>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
 @font-face {
     font-family: 'Outfit';
@@ -203,7 +203,12 @@ function loadKuesioner() {
     })
     .catch(err => {
         console.error(err);
-        alert('Gagal memuat kuesioner.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Terjadi Kesalahan',
+            text: 'Gagal memuat data kuesioner.',
+            confirmButtonColor: '#d32f2f'
+        });
     });
 }
 function simpanKuesioner() {
@@ -212,7 +217,12 @@ function simpanKuesioner() {
 
     for (const s of selects) {
         if (!s.value) {
-            alert('Semua pertanyaan harus diisi.');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Perhatian',
+                text: 'Semua pertanyaan harus diisi terlebih dahulu.',
+                confirmButtonColor: '#2e7d32'
+            });
             return;
         }
 
@@ -238,17 +248,29 @@ function simpanKuesioner() {
     })
     .then(res => res.json())
     .then(data => {
-        alert(data.message);
-
-        // Kembali ke halaman penilaian siswa
-        window.location.href = 'guru.html?menu=penilaian';
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: 'Kuesioner berhasil disimpan.',
+            confirmButtonColor: '#2e7d32',
+            timer: 1800,
+            timerProgressBar: true,
+            showConfirmButton: false
+        });
+        setTimeout(() => {
+            window.location.href = 'guru.html?menu=penilaian';
+        }, 1800);
     })
     .catch(err => {
         console.error(err);
-        alert('Gagal menyimpan kuesioner.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: 'Kuesioner gagal disimpan.',
+            confirmButtonColor: '#d32f2f'
+        });
     });
 }
-
 loadKuesioner();
 </script>
 

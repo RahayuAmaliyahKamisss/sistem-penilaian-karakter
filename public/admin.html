@@ -170,9 +170,8 @@ h1, h2, h3 {
 }
 .section h2{
     margin-top:0;
-    margin-bottom:25px;
-
-    font-size:36px;
+    font-size:28px;
+    margin-bottom:15px;
     font-weight:700;
 }
 table{
@@ -550,26 +549,124 @@ button.action:hover {
     background: linear-gradient(135deg, #c62828, #e53935) !important;
 }
 @media (max-width:768px){
-
     body{
+        overflow-x:hidden;
+    }
+    .layout{
         flex-direction:column;
     }
-
     .sidebar{
-        position: relative;
+        position:relative;
         width:100%;
         height:auto;
-    }
-
-    .content{
         padding:15px;
+        box-sizing:border-box;
     }
-
+    .sidebar-header{
+        margin-bottom:18px;
+        padding-bottom:15px;
+    }
+    .logo-box{
+        width:70px;
+        height:70px;
+        margin:0 auto;
+    }
+    .logo-box img{
+        width:60px;
+    }
+    .sidebar-header span{
+        display:block;
+        margin-top:8px;
+        font-size:22px;
+    }
+    .sidebar button{
+        width:100%;
+        padding:12px 14px;
+        margin-bottom:8px;
+        font-size:14px;
+        border-radius:12px;
+    }
+    .content{
+        width:100%;
+        margin-left:0;
+        padding:15px;
+        box-sizing:border-box;
+    }
+    .section{
+        padding:18px;
+        border-radius:18px;
+    }
+    .section h2{
+        font-size:28px;
+        margin-bottom:15px;
+    }
+    .dashboard-info{
+        gap:15px;
+    }
+    .dashboard-card{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:15px;
+        padding:18px;
+        border-radius:16px;
+    }
+    .card-icon{
+        width:55px;
+        height:55px;
+        border-radius:14px;
+    }
+    .card-icon i{
+        font-size:24px;
+    }
+    .card-content h3{
+        font-size:18px;
+        margin-bottom:8px;
+    }
+    .card-content p{
+        font-size:14px;
+        line-height:1.7;
+    }
     .topbar{
         flex-direction:column;
+        gap:10px;
+    }
+    .topbar input,
+    .topbar button{
+        width:100%;
+    }
+    button.action{
+        width:100%;
+        min-width:unset;
+        height:44px;
+    }
+    table{
+        display:block;
+        overflow-x:auto;
+        white-space:nowrap;
+        font-size:13px;
+    }
+    th,td{
+        padding:12px;
+    }
+    .modal-content{
+        width:95%;
+        padding:18px;
+        max-height:85vh;
+    }
+    .modal-action{
+        flex-direction:column;
+        gap:10px;
+    }
+    .modal-action button{
+        width:100%;
+    }
+    #kelas_map{
+        height:140px !important;
+    }
+    textarea{
+        font-size:14px;
     }
 }
-
 </style>
 </head>
 

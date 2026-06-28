@@ -141,9 +141,6 @@ width:280px;
 
     font-size:34px;
 }
-
-/* BUTTON */
-
 button.action{
     min-width:140px;
 
@@ -204,9 +201,6 @@ select:focus{
     box-shadow:
     0 0 0 3px rgba(46,125,50,.15);
 }
-
-/* TABLE */
-
 table{
     width:100%;
 
@@ -363,6 +357,110 @@ tr:hover{
 .export-icon-inline:hover {
     transform: translateY(-2px) scale(1.05);
     box-shadow: 0 10px 20px rgba(0,0,0,.2);
+}
+/* =========================
+   MOBILE RESPONSIVE
+========================= */
+@media (max-width:768px){
+
+    .layout{
+        flex-direction:column;
+    }
+
+    .sidebar{
+        position:relative;
+        width:100%;
+        height:auto;
+        padding:20px;
+        display:block;
+    }
+
+    .sidebar-header{
+        margin-bottom:20px;
+        padding-bottom:20px;
+        border-bottom:1px solid rgba(255,255,255,.2);
+    }
+
+    .logo-box{
+        width:80px;
+        height:80px;
+        margin:auto;
+    }
+
+    .logo-box img{
+        width:70px;
+    }
+
+    .sidebar-header span{
+        display:block;
+        margin-top:8px;
+        font-size:24px;
+    }
+
+    .sidebar button{
+        width:100%;
+        margin-bottom:10px;
+        padding:14px 16px;
+        border-radius:12px;
+        justify-content:flex-start;
+        font-size:15px;
+    }
+
+    .content{
+        width:100%;
+        margin-left:0;
+        padding:15px;
+    }
+
+    .section{
+        padding:18px;
+    }
+
+    .section h2{
+        font-size:28px;
+    }
+
+    .stats{
+        display:flex;
+        flex-direction:column;
+        gap:15px;
+    }
+
+    .card{
+        width:100%;
+        min-width:unset;
+        padding:18px;
+    }
+
+    table{
+        display:block;
+        overflow-x:auto;
+        white-space:nowrap;
+    }
+
+    th,
+    td{
+        padding:10px;
+        font-size:13px;
+    }
+
+    button.action{
+        min-width:90px;
+        height:38px;
+        font-size:13px;
+    }
+
+    .popup-content{
+        width:95%;
+        padding:18px;
+    }
+
+    .toast{
+        left:10px;
+        right:10px;
+        min-width:auto;
+    }
+
 }
 </style>
 </head>
